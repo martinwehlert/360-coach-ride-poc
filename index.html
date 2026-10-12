@@ -1,0 +1,635 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <title>360° Coach – KICKR Test</title>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0b1220;
+      color: white;
+      margin: 0;
+      padding: 24px;
+    }
+
+    .wrap {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .sub {
+      color: #9aa7bd;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: #151e2e;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .status {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .metric {
+      text-align: center;
+      background: #1d283a;
+      border-radius: 12px;
+      padding: 18px 6px;
+    }
+
+    .value {
+      font-size: 32px;
+      font-weight: 700;
+    }
+
+    .label {
+      color: #9aa7bd;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 16px;
+      margin: 6px 0;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .connect {
+      background: white;
+      color: #0b1220;
+    }
+
+    .power {
+      background: #27354b;
+      color: white;
+    }
+
+    .danger {
+      background: #55252c;
+      color: white;
+    }
+
+    button:disabled {
+      opacity: .4;
+    }
+
+    #log {
+      background: #070c14;
+      padding: 12px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: monospace;
+      font-size: 12px;
+      min-height: 130px;
+      max-height: 280px;
+      overflow: auto;
+    }
+
+    .warning {
+      color: #ffca6a;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <h1>360° Coach</h1>
+  <div class="sub">KICKR FTMS Proof of Concept</div>
+
+  <div class="card">
+    <div id="status" class="status">
+      Nicht verbunden
+    </div>
+  </div>
+
+  <div class="card metrics">
+    <div class="metric">
+      <div id="power" class="value">--</div>
+      <div class="label">WATT</div>
+    </div>
+
+    <div class="metric">
+      <div id="cadence" class="value">--</div>
+      <div class="label">RPM</div>
+    </div>
+
+    <div class="metric">
+      <div id="speed" class="value">--</div>
+      <div class="label">KM/H</div>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <button class="connect" onclick="connectTrainer()">
+      KICKR VERBINDEN
+    </button>
+
+    <button id="controlButton"
+            class="power"
+            onclick="requestControl()"
+            disabled>
+      KONTROLLE ANFORDERN
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <h3>ERG Test</h3>
+
+    <p class="warning">
+      Nur während du pedalierst testen.
+      Wir beginnen absichtlich mit niedrigen Leistungen.
+    </p>
+
+    <button class="power erg"
+            onclick="setTargetPower(100)"
+            disabled>
+      100 W
+    </button>
+
+    <button class="power erg"
+            onclick="setTargetPower(140)"
+            disabled>
+      140 W
+    </button>
+
+    <button class="power erg"
+            onclick="setTargetPower(180)"
+            disabled>
+      180 W
+    </button>
+
+  </div>
+
+  <div class="card">
+
+    <button class="danger" onclick="disconnectTrainer()">
+      VERBINDUNG TRENNEN
+    </button>
+
+  </div>
+
+  <div class="card">
+    <h3>Debug Log</h3>
+    <div id="log"></div>
+  </div>
+
+</div>
+
+<script>
+
+const FTMS_SERVICE = 0x1826;
+const INDOOR_BIKE_DATA = 0x2AD2;
+const CONTROL_POINT = 0x2AD9;
+const SUPPORTED_POWER_RANGE = 0x2AD8;
+
+let device = null;
+let server = null;
+let ftms = null;
+let bikeDataCharacteristic = null;
+let controlPointCharacteristic = null;
+
+function log(message) {
+  const box = document.getElementById("log");
+
+  const time = new Date().toLocaleTimeString();
+
+  box.textContent +=
+    "[" + time + "] " + message + "\n";
+
+  box.scrollTop = box.scrollHeight;
+}
+
+function setStatus(text) {
+  document.getElementById("status").textContent = text;
+}
+
+function enableControls(enabled) {
+
+  document.getElementById("controlButton").disabled = !enabled;
+
+  document.querySelectorAll(".erg").forEach(button => {
+    button.disabled = !enabled;
+  });
+}
+
+async function connectTrainer() {
+
+  try {
+
+    if (!navigator.bluetooth) {
+      throw new Error(
+        "Web Bluetooth ist in diesem Browser nicht verfügbar."
+      );
+    }
+
+    log("Bluetooth API verfügbar.");
+
+    setStatus("Geräteauswahl öffnen …");
+
+    device = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: [FTMS_SERVICE]
+    });
+
+    log("Ausgewählt: " + (device.name || "Unbekanntes Gerät"));
+
+    device.addEventListener(
+      "gattserverdisconnected",
+      onDisconnected
+    );
+
+    setStatus("Verbinde mit " + (device.name || "Gerät") + " …");
+
+    server = await device.gatt.connect();
+
+    log("GATT verbunden.");
+
+    ftms = await server.getPrimaryService(FTMS_SERVICE);
+
+    log("FTMS Service 0x1826 gefunden.");
+
+    bikeDataCharacteristic =
+      await ftms.getCharacteristic(INDOOR_BIKE_DATA);
+
+    log("Indoor Bike Data 0x2AD2 gefunden.");
+
+    await bikeDataCharacteristic.startNotifications();
+
+    bikeDataCharacteristic.addEventListener(
+      "characteristicvaluechanged",
+      handleBikeData
+    );
+
+    log("Live-Daten Notifications gestartet.");
+
+    controlPointCharacteristic =
+      await ftms.getCharacteristic(CONTROL_POINT);
+
+    log("FTMS Control Point 0x2AD9 gefunden.");
+
+    try {
+
+      await controlPointCharacteristic.startNotifications();
+
+      controlPointCharacteristic.addEventListener(
+        "characteristicvaluechanged",
+        handleControlResponse
+      );
+
+      log("Control-Point Responses aktiviert.");
+
+    } catch (e) {
+
+      log(
+        "Hinweis: Control-Point Notifications konnten nicht aktiviert werden: "
+        + e.message
+      );
+
+    }
+
+    try {
+
+      const rangeCharacteristic =
+        await ftms.getCharacteristic(SUPPORTED_POWER_RANGE);
+
+      const range = await rangeCharacteristic.readValue();
+
+      if (range.byteLength >= 6) {
+
+        const min = range.getInt16(0, true);
+        const max = range.getInt16(2, true);
+        const step = range.getUint16(4, true);
+
+        log(
+          "Power Range: " +
+          min + "–" +
+          max + " W, Schritt " +
+          step + " W"
+        );
+
+      }
+
+    } catch (e) {
+
+      log(
+        "Supported Power Range nicht gelesen: " +
+        e.message
+      );
+
+    }
+
+    setStatus(
+      "Verbunden: " + (device.name || "KICKR")
+    );
+
+    enableControls(true);
+
+    await sleep(300);
+
+    await requestControl();
+
+  } catch (error) {
+
+    console.error(error);
+
+    setStatus("Fehler");
+
+    log(
+      "FEHLER: " +
+      error.name +
+      " – " +
+      error.message
+    );
+
+  }
+}
+
+async function requestControl() {
+
+  try {
+
+    if (!controlPointCharacteristic) {
+      throw new Error("Control Point nicht verbunden.");
+    }
+
+    log("Fordere Trainerkontrolle an …");
+
+    await writeControl(
+      new Uint8Array([0x00])
+    );
+
+  } catch (error) {
+
+    log(
+      "CONTROL ERROR: " +
+      error.name +
+      " – " +
+      error.message
+    );
+
+  }
+}
+
+async function setTargetPower(watts) {
+
+  try {
+
+    if (!controlPointCharacteristic) {
+      throw new Error("Control Point nicht verbunden.");
+    }
+
+    const buffer = new ArrayBuffer(3);
+    const view = new DataView(buffer);
+
+    // FTMS Opcode 0x05 = Set Target Power
+    view.setUint8(0, 0x05);
+
+    // Target Power = signed 16-bit, little endian
+    view.setInt16(1, watts, true);
+
+    log("Setze ERG Ziel auf " + watts + " W …");
+
+    await writeControl(
+      new Uint8Array(buffer)
+    );
+
+  } catch (error) {
+
+    log(
+      "POWER ERROR: " +
+      error.name +
+      " – " +
+      error.message
+    );
+
+  }
+}
+
+async function writeControl(data) {
+
+  if (
+    typeof controlPointCharacteristic.writeValueWithResponse
+      === "function"
+  ) {
+
+    await controlPointCharacteristic.writeValueWithResponse(data);
+
+  } else {
+
+    await controlPointCharacteristic.writeValue(data);
+
+  }
+}
+
+function handleControlResponse(event) {
+
+  const value = event.target.value;
+
+  const bytes = new Uint8Array(
+    value.buffer,
+    value.byteOffset,
+    value.byteLength
+  );
+
+  const hex = Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join(" ");
+
+  log("Control Response: " + hex);
+
+  if (bytes.length >= 3 && bytes[0] === 0x80) {
+
+    const requestedOpcode = bytes[1];
+    const result = bytes[2];
+
+    const resultText = {
+      0x01: "SUCCESS",
+      0x02: "OPCODE NOT SUPPORTED",
+      0x03: "INVALID PARAMETER",
+      0x04: "OPERATION FAILED",
+      0x05: "CONTROL NOT PERMITTED"
+    };
+
+    log(
+      "FTMS Antwort für Opcode 0x" +
+      requestedOpcode.toString(16) +
+      ": " +
+      (resultText[result] || ("Code " + result))
+    );
+
+  }
+}
+
+function handleBikeData(event) {
+
+  try {
+
+    const value = event.target.value;
+
+    let index = 0;
+
+    if (value.byteLength < 2) return;
+
+    const flags = value.getUint16(index, true);
+    index += 2;
+
+    let speed = null;
+    let cadence = null;
+    let power = null;
+
+    // Bit 0 = More Data
+    // Wenn Bit 0 NICHT gesetzt ist,
+    // ist Instantaneous Speed vorhanden.
+    if ((flags & 0x0001) === 0) {
+
+      if (index + 2 <= value.byteLength) {
+
+        speed = value.getUint16(index, true) / 100;
+
+        index += 2;
+
+      }
+
+    }
+
+    // Bit 1 = Average Speed
+    if (flags & 0x0002) {
+      index += 2;
+    }
+
+    // Bit 2 = Instantaneous Cadence
+    if (flags & 0x0004) {
+
+      if (index + 2 <= value.byteLength) {
+
+        cadence =
+          value.getUint16(index, true) / 2;
+
+        index += 2;
+
+      }
+
+    }
+
+    // Bit 3 = Average Cadence
+    if (flags & 0x0008) {
+      index += 2;
+    }
+
+    // Bit 4 = Total Distance (uint24)
+    if (flags & 0x0010) {
+      index += 3;
+    }
+
+    // Bit 5 = Resistance Level
+    if (flags & 0x0020) {
+      index += 2;
+    }
+
+    // Bit 6 = Instantaneous Power
+    if (flags & 0x0040) {
+
+      if (index + 2 <= value.byteLength) {
+
+        power = value.getInt16(index, true);
+
+        index += 2;
+
+      }
+
+    }
+
+    if (speed !== null) {
+      document.getElementById("speed").textContent =
+        speed.toFixed(1);
+    }
+
+    if (cadence !== null) {
+      document.getElementById("cadence").textContent =
+        Math.round(cadence);
+    }
+
+    if (power !== null) {
+      document.getElementById("power").textContent =
+        power;
+    }
+
+  } catch (error) {
+
+    log("DATA PARSE ERROR: " + error.message);
+
+  }
+}
+
+function disconnectTrainer() {
+
+  if (device && device.gatt && device.gatt.connected) {
+
+    device.gatt.disconnect();
+
+  }
+
+  onDisconnected();
+}
+
+function onDisconnected() {
+
+  setStatus("Nicht verbunden");
+
+  enableControls(false);
+
+  document.getElementById("power").textContent = "--";
+  document.getElementById("cadence").textContent = "--";
+  document.getElementById("speed").textContent = "--";
+
+  log("Bluetooth-Verbindung getrennt.");
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+log("360° Coach FTMS Tester geladen.");
+
+if ("bluetooth" in navigator) {
+  log("Web Bluetooth erkannt.");
+} else {
+  log("Web Bluetooth NICHT erkannt.");
+}
+
+</script>
+
+</body>
+</html>
