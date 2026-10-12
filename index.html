@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>360° Coach – Ride Diagnostics v6</title>
+  <title>360° Coach – Ride Diagnostics v6.1</title>
   <style>
     *{box-sizing:border-box}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0b1220;color:#fff;margin:0;padding:14px}
@@ -22,7 +22,7 @@
 <body>
 <div class="wrap">
   <h1>360° Coach</h1>
-  <div class="sub">Ride Diagnostics v6 · Speed/Distance Validation · FIT Export · Tredict Sync Guard</div>
+  <div class="sub">Ride Diagnostics v6.1 · Trainer-like Speed Dynamics · FIT Export</div>
 
   <div class="card">
     <div class="statusline"><div><div id="status" class="big">Nicht verbunden</div><div id="workoutName" class="muted">Workout wird geladen …</div></div><div><div id="hrStatus" class="statusdot">HRM: nicht verbunden</div><div id="fitStatus" class="statusdot">FIT: noch keine Session</div></div></div>
@@ -49,7 +49,7 @@
       <button id="roadBtn" class="profile" onclick="setBikeProfile('road')">RENNRAD · CdA 0,30</button>
       <button id="triBtn" class="profile active" onclick="setBikeProfile('tri')">TRI · CdA 0,23</button>
     </div>
-    <div class="note">Modell: 79 kg Fahrer + 8 kg Rad · Crr 0,005 · 0 % · 0 km/h Wind · ρ 1,225 kg/m³. Virtuelle Werte sind <b>geschätzt</b>, nicht vom KICKR gemessen. Bike-Profil wird während einer laufenden Session gesperrt. Bei ≤5 W wird eine moderate Freewheel-Kalibrierung genutzt, damit das Ausrollen nicht unrealistisch lange wirkt.</div>
+    <div class="note">Dauerhafte Geschwindigkeit bleibt aus Fahrer+Radmasse, CdA, Crr, Luftdichte, Wind und Steigung <b>geschätzt</b>. Die Übergangsdynamik ist bewusst trainerähnlich kalibriert: bei 0 W etwa 30→0 km/h in 10 s; bei Leistungswechseln nähert sich die Anzeige in rund 2 s weitgehend dem neuen Zielwert. Diese Dynamik ist eine N=1-Anzeigekalibrierung und keine Outdoor-Trägheitssimulation.</div>
     <button class="secondary" onclick="runPhysicsSelfTest()">PHYSIKMODELL SELBSTTEST</button>
     <div id="physicsDiag" class="diag" style="margin-top:8px">Noch nicht geprüft.</div>
   </div>
@@ -71,19 +71,19 @@
 
   <div class="card">
     <div class="section-title">FIT Activity Export</div>
-    <div class="note">Nach einer gefahrenen Session wird aus den 1-Hz-Daten ein FIT Activity File erzeugt und direkt mit dem offiziellen Garmin FIT JavaScript SDK auf Integrität geprüft.</div>
+    <div class="note">Nach einer gefahrenen Session wird aus den 1-Hz-Daten ein FIT Activity File erzeugt und direkt mit dem offiziellen Garmin FIT JavaScript SDK auf Integrität geprüft. Garmin/FR955 bleibt der Normalweg zu Garmin Connect und Tredict; das 360°-FIT ist Backup.</div>
     <div class="grid2"><button id="fitBuildBtn" class="success" onclick="buildAndValidateFit()" disabled>FIT ERZEUGEN & VALIDIEREN</button><button id="fitShareBtn" class="secondary" onclick="shareLastFit()" disabled>FIT TEILEN / SICHERN</button></div>
     <button id="fitDownloadBtn" class="secondary" onclick="downloadLastFit()" disabled>DOWNLOAD-FALLBACK</button>
     <div id="fitDiag" class="diag" style="margin-top:8px">Noch keine aufgezeichnete Session.</div>
   </div>
 
-  <div class="card">
-    <div class="section-title">Tredict Sync Guard · Garmin zuerst, FIT als Fallback</div>
-    <div class="note">Für den technischen Test kann ein persönlicher Tredict API-Token mit <b>activityRead</b> + <b>activityWrite</b> eingegeben werden. Der Token bleibt nur im Arbeitsspeicher dieser Seite, wird weder gespeichert noch geloggt. Zuerst suchen wir nach der parallel von Garmin gelieferten Radaktivität. Nur wenn keine passende Garmin-Aktivität gefunden wird, kann unser FIT als Fallback hochgeladen werden.</div>
+  <div class="card" style="display:none">
+    <div class="section-title">Tredict Sync Guard · Diagnose</div>
+    <div class="note">Nur Diagnosecode; im normalen Workflow nicht verwendet.</div>
     <input id="tredictToken" class="textinput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tredict Personal API Token">
     <div class="grid2"><button class="secondary" onclick="testTredictConnection()">TREDICT VERBINDUNG PRÜFEN</button><button id="tredictCheckBtn" class="secondary" onclick="checkTredictForGarminMatch()" disabled>GARMIN-DUPLIKAT PRÜFEN</button></div>
     <button id="tredictUploadBtn" class="accent" onclick="uploadFitToTredict()" disabled>FIT FALLBACK ZU TREDICT HOCHLADEN</button>
-    <div id="tredictDiag" class="diag" style="margin-top:8px">Noch nicht geprüft.</div>
+    <div id="tredictDiag" class="diag" style="margin-top:8px">Nicht im normalen Workflow aktiv.</div>
   </div>
 
   <div class="card">
@@ -96,6 +96,7 @@
 
 <script src="app-core2-v6.js"></script>
 <script src="app-core1-v6.js"></script>
+<script src="app-speed-v61.js"></script>
 <script src="app-sync-v6.js"></script>
 
 </body>
