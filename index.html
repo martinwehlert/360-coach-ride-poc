@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>360° Coach – Ride Diagnostics v5</title>
+  <title>360° Coach – Ride Diagnostics v6</title>
   <style>
     *{box-sizing:border-box}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0b1220;color:#fff;margin:0;padding:14px}
@@ -13,7 +13,7 @@
     .metric{text-align:center;background:#1d283a;border-radius:12px;padding:13px 5px}.value{font-size:27px;font-weight:750}.value.sm{font-size:21px}.label{color:#9aa7bd;font-size:10px;margin-top:3px}
     .big{font-size:28px;font-weight:750}.pill{display:inline-block;background:#27354b;border-radius:999px;padding:5px 9px;margin:4px 5px 0 0;font-size:12px}
     button{width:100%;border:0;border-radius:12px;padding:12px;margin:4px 0;font-size:14px;font-weight:680}.primary{background:#fff;color:#0b1220}.secondary{background:#27354b;color:#fff}.accent{background:#38577e;color:#fff}.danger{background:#55252c;color:#fff}.success{background:#24543a;color:#fff}.profile{background:#27354b;color:#fff}.profile.active{outline:2px solid #fff}button:disabled{opacity:.38}
-    .statusline{display:flex;justify-content:space-between;gap:10px;align-items:center}.statusdot{font-size:12px;color:#9aa7bd;text-align:right}.note{font-size:12px;color:#9aa7bd;line-height:1.45;margin-top:8px}
+    .statusline{display:flex;justify-content:space-between;gap:10px;align-items:center}.statusdot{font-size:12px;color:#9aa7bd;text-align:right}.note{font-size:12px;color:#9aa7bd;line-height:1.45;margin-top:8px}.textinput{width:100%;background:#0f1725;color:#fff;border:1px solid #354158;border-radius:10px;padding:12px;font-size:14px;margin:5px 0}.textinput::placeholder{color:#77849a}
     .diag{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.5;color:#cbd5e1;white-space:pre-wrap}.ok{color:#8fe3a4}.warn{color:#ffca6a}
     #log{background:#070c14;padding:12px;border-radius:10px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;min-height:140px;max-height:300px;overflow:auto}
     @media(max-width:560px){.grid4{grid-template-columns:repeat(2,1fr)}.grid3{grid-template-columns:repeat(3,1fr)}.value{font-size:23px}.value.sm{font-size:19px}.card{padding:13px}body{padding:9px}}
@@ -22,7 +22,7 @@
 <body>
 <div class="wrap">
   <h1>360° Coach</h1>
-  <div class="sub">Ride Diagnostics v5 · Speed/Distance Validation · FIT Export · Tredict Bridge</div>
+  <div class="sub">Ride Diagnostics v6 · Speed/Distance Validation · FIT Export · Tredict Sync Guard</div>
 
   <div class="card">
     <div class="statusline"><div><div id="status" class="big">Nicht verbunden</div><div id="workoutName" class="muted">Workout wird geladen …</div></div><div><div id="hrStatus" class="statusdot">HRM: nicht verbunden</div><div id="fitStatus" class="statusdot">FIT: noch keine Session</div></div></div>
@@ -49,7 +49,7 @@
       <button id="roadBtn" class="profile" onclick="setBikeProfile('road')">RENNRAD · CdA 0,30</button>
       <button id="triBtn" class="profile active" onclick="setBikeProfile('tri')">TRI · CdA 0,23</button>
     </div>
-    <div class="note">Modell: 79 kg Fahrer + 8 kg Rad · Crr 0,004 · 0 % · 0 km/h Wind · ρ 1,225 kg/m³. Virtuelle Werte sind <b>geschätzt</b>, nicht vom KICKR gemessen. Bike-Profil wird während einer laufenden Session gesperrt.</div>
+    <div class="note">Modell: 79 kg Fahrer + 8 kg Rad · Crr 0,005 · 0 % · 0 km/h Wind · ρ 1,225 kg/m³. Virtuelle Werte sind <b>geschätzt</b>, nicht vom KICKR gemessen. Bike-Profil wird während einer laufenden Session gesperrt. Bei ≤5 W wird eine moderate Freewheel-Kalibrierung genutzt, damit das Ausrollen nicht unrealistisch lange wirkt.</div>
     <button class="secondary" onclick="runPhysicsSelfTest()">PHYSIKMODELL SELBSTTEST</button>
     <div id="physicsDiag" class="diag" style="margin-top:8px">Noch nicht geprüft.</div>
   </div>
@@ -72,8 +72,18 @@
   <div class="card">
     <div class="section-title">FIT Activity Export</div>
     <div class="note">Nach einer gefahrenen Session wird aus den 1-Hz-Daten ein FIT Activity File erzeugt und direkt mit dem offiziellen Garmin FIT JavaScript SDK auf Integrität geprüft.</div>
-    <div class="grid2"><button id="fitBuildBtn" class="success" onclick="buildAndValidateFit()" disabled>FIT ERZEUGEN & VALIDIEREN</button><button id="fitDownloadBtn" class="secondary" onclick="downloadLastFit()" disabled>FIT HERUNTERLADEN</button></div>
+    <div class="grid2"><button id="fitBuildBtn" class="success" onclick="buildAndValidateFit()" disabled>FIT ERZEUGEN & VALIDIEREN</button><button id="fitShareBtn" class="secondary" onclick="shareLastFit()" disabled>FIT TEILEN / SICHERN</button></div>
+    <button id="fitDownloadBtn" class="secondary" onclick="downloadLastFit()" disabled>DOWNLOAD-FALLBACK</button>
     <div id="fitDiag" class="diag" style="margin-top:8px">Noch keine aufgezeichnete Session.</div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Tredict Sync Guard · Garmin zuerst, FIT als Fallback</div>
+    <div class="note">Für den technischen Test kann ein persönlicher Tredict API-Token mit <b>activityRead</b> + <b>activityWrite</b> eingegeben werden. Der Token bleibt nur im Arbeitsspeicher dieser Seite, wird weder gespeichert noch geloggt. Zuerst suchen wir nach der parallel von Garmin gelieferten Radaktivität. Nur wenn keine passende Garmin-Aktivität gefunden wird, kann unser FIT als Fallback hochgeladen werden.</div>
+    <input id="tredictToken" class="textinput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Tredict Personal API Token">
+    <div class="grid2"><button class="secondary" onclick="testTredictConnection()">TREDICT VERBINDUNG PRÜFEN</button><button id="tredictCheckBtn" class="secondary" onclick="checkTredictForGarminMatch()" disabled>GARMIN-DUPLIKAT PRÜFEN</button></div>
+    <button id="tredictUploadBtn" class="accent" onclick="uploadFitToTredict()" disabled>FIT FALLBACK ZU TREDICT HOCHLADEN</button>
+    <div id="tredictDiag" class="diag" style="margin-top:8px">Noch nicht geprüft.</div>
   </div>
 
   <div class="card">
@@ -84,180 +94,9 @@
   <div class="card"><div class="section-title">Debug Log</div><div id="log"></div></div>
 </div>
 
-<script>
-const FTMS_SERVICE="00001826-0000-1000-8000-00805f9b34fb";
-const FTMS_FEATURE="00002acc-0000-1000-8000-00805f9b34fb";
-const INDOOR_BIKE_DATA="00002ad2-0000-1000-8000-00805f9b34fb";
-const CONTROL_POINT="00002ad9-0000-1000-8000-00805f9b34fb";
-const SUPPORTED_POWER_RANGE="00002ad8-0000-1000-8000-00805f9b34fb";
-const HR_SERVICE="0000180d-0000-1000-8000-00805f9b34fb";
-const HR_MEASUREMENT="00002a37-0000-1000-8000-00805f9b34fb";
-const FIT_SDK_URL="https://cdn.jsdelivr.net/npm/@garmin/fitsdk@21.218.0/src/index.js";
+<script src="app-core1-v6.js"></script>
+<script src="app-core2-v6.js"></script>
+<script src="app-sync-v6.js"></script>
 
-let device=null,server=null,ftms=null,bikeDataCharacteristic=null,controlPointCharacteristic=null;
-let hrDevice=null,hrServer=null,hrCharacteristic=null;
-let workout=null,currentStepIndex=-1,stepStartedAt=null,timerId=null,running=false;
-let latestPower=0,latestCadence=null,latestRawSpeed=null,latestHeartRate=null;
-let rawDistanceM=0,rawDistanceLastTs=null;
-
-const model={riderKg:79,bikeKg:8,cda:0.23,crr:0.004,rho:1.225,grade:0,windKmh:0};
-let virtualSpeedMs=0,virtualDistanceM=0,simLastTs=performance.now(),mechanicalWorkJ=0;
-let simTimer=setInterval(simulationTick,250);
-
-let sessionSamples=[],recordTimer=null,sessionStartedAt=null,sessionEndedAt=null,lastFitBytes=null,lastFitFilename=null;
-
-function log(message){const box=document.getElementById('log');const time=new Date().toLocaleTimeString();box.textContent+=`[${time}] ${message}\n`;box.scrollTop=box.scrollHeight;}
-function setStatus(text){document.getElementById('status').textContent=text;}
-function fmt(sec){sec=Math.max(0,Math.round(sec));return `${Math.floor(sec/60)}:${String(sec%60).padStart(2,'0')}`;}
-function rawError(error){try{return JSON.stringify(error)}catch(e){return String(error)}}
-function trainerReady(){return !!(device&&device.gatt&&device.gatt.connected&&controlPointCharacteristic);}
-function uuidShort(uuid){const m=String(uuid).toLowerCase().match(/^0000([0-9a-f]{4})-/);return m?`0x${m[1].toUpperCase()}`:uuid;}
-function bytesHex(view){const b=new Uint8Array(view.buffer,view.byteOffset,view.byteLength);return Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join(' ');}
-function avg(arr){const a=arr.filter(Number.isFinite);return a.length?a.reduce((x,y)=>x+y,0)/a.length:null}
-function maxVal(arr){const a=arr.filter(Number.isFinite);return a.length?Math.max(...a):null}
-function safeName(s){return String(s||'ride').toLowerCase().replace(/[^a-z0-9äöüß]+/gi,'-').replace(/^-|-$/g,'').slice(0,60)||'ride'}
-
-function updateButtons(){
-  document.getElementById('startBtn').disabled=!(trainerReady()&&workout&&!running);
-  document.getElementById('skipBtn').disabled=!(trainerReady()&&workout&&running);
-  document.getElementById('fitBuildBtn').disabled=sessionSamples.length<2||running;
-  document.getElementById('fitDownloadBtn').disabled=!lastFitBytes;
-  document.getElementById('roadBtn').disabled=running;
-  document.getElementById('triBtn').disabled=running;
-}
-
-async function loadWorkout(path='workouts/current.json',sourceLabel='GitHub current.json'){
-  if(running){log('Workout-Wechsel während laufender Session blockiert.');return;}
-  try{
-    const url=`${path}?ts=${Date.now()}`;log(`Lade Workout: ${url}`);
-    const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();if(!Array.isArray(data.steps)||!data.steps.length)throw new Error('Keine gültigen steps.');
-    workout=data;currentStepIndex=-1;document.getElementById('workoutName').textContent=`${workout.name} · ${workout.steps.length} Schritte · ${sourceLabel}`;renderStep();
-    log(`Workout geladen: ${workout.name} | Quelle: ${sourceLabel}`);if(data.source?.type)log(`Workout Source Metadata: ${data.source.type}${data.source.id?' · '+data.source.id:''}`);updateButtons();
-  }catch(e){workout=null;document.getElementById('workoutName').textContent='Workout konnte nicht geladen werden.';log(`WORKOUT FEHLER: ${e?.message||rawError(e)}`);updateButtons();}
-}
-
-async function connectTrainer(){
-  try{
-    log('Verbindungsversuch über FTMS-Servicefilter.');if(!navigator.bluetooth)throw new Error('Web Bluetooth nicht verfügbar.');
-    device=await navigator.bluetooth.requestDevice({filters:[{services:[FTMS_SERVICE]}]});log(`Gerät ausgewählt: ${device.name||'Unbekannt'}`);device.addEventListener('gattserverdisconnected',onTrainerDisconnected);
-    log('Verbinde KICKR GATT …');server=await device.gatt.connect();log('KICKR GATT verbunden.');ftms=await server.getPrimaryService(FTMS_SERVICE);log('FTMS Service gefunden.');
-    await probeFTMSCapabilities();
-    bikeDataCharacteristic=await ftms.getCharacteristic(INDOOR_BIKE_DATA);await bikeDataCharacteristic.startNotifications();bikeDataCharacteristic.addEventListener('characteristicvaluechanged',handleBikeData);log('Indoor Bike Data Notifications aktiv.');
-    controlPointCharacteristic=await ftms.getCharacteristic(CONTROL_POINT);await controlPointCharacteristic.startNotifications();controlPointCharacteristic.addEventListener('characteristicvaluechanged',handleControlResponse);log('Control Point Notifications aktiv.');
-    try{const rangeChar=await ftms.getCharacteristic(SUPPORTED_POWER_RANGE);const range=await rangeChar.readValue();if(range.byteLength>=6)log(`Supported Power Range: ${range.getInt16(0,true)}–${range.getInt16(2,true)} W | Schritt ${range.getUint16(4,true)} W`);}catch(e){log('Power Range Hinweis: '+(e?.message||rawError(e)));}
-    setStatus(`Verbunden: ${device.name||'KICKR'}`);log('Trainer vollständig verbunden.');await requestControl();updateButtons();
-  }catch(error){setStatus('KICKR Fehler');log('KICKR FEHLER: '+(error?.message||String(error)));updateButtons();}
-}
-
-async function probeFTMSCapabilities(){
-  const lines=[];
-  try{const chars=await ftms.getCharacteristics();const list=chars.map(c=>uuidShort(c.uuid)).join(', ');log('FTMS Characteristics: '+list);lines.push('Characteristics: '+list);}catch(e){lines.push('Characteristics nicht lesbar.');}
-  try{
-    const fc=await ftms.getCharacteristic(FTMS_FEATURE),v=await fc.readValue();log('Fitness Machine Feature RAW: '+bytesHex(v));
-    if(v.byteLength>=8){const machine=v.getUint32(0,true),target=v.getUint32(4,true);const machineNames=['Ø Speed','Cadence','Total Distance','Inclination','Elevation Gain','Pace','Step Count','Resistance','Stride Count','Energy','Heart Rate','MET','Elapsed Time','Remaining Time','Power'];const targetNames=['Speed Target','Inclination Target','Resistance Target','Power Target','HR Target','Energy Target','Step Target','Stride Target','Distance Target','Training Time','Time in 2 HR Zones','Time in 3 HR Zones','Time in 5 HR Zones','Indoor Bike Simulation','Wheel Circumference','Spin Down','Cadence Target'];const m=[],t=[];for(let i=0;i<machineNames.length;i++)if(machine&(1<<i))m.push(machineNames[i]);for(let i=0;i<targetNames.length;i++)if(target&(1<<i))t.push(targetNames[i]);log('FTMS Machine Features: '+(m.join(', ')||'—'));log('FTMS Target Features: '+(t.join(', ')||'—'));lines.push(`Feature RAW: ${bytesHex(v)}\nMachine: ${m.join(', ')||'—'}\nTargets: ${t.join(', ')||'—'}`);}
-  }catch(e){lines.push('Fitness Machine Feature nicht lesbar.');}
-  document.getElementById('capabilities').textContent=lines.join('\n');
-}
-
-async function connectHRM(){
-  try{
-    if(!navigator.bluetooth)throw new Error('Web Bluetooth nicht verfügbar.');log('Suche BLE Heart Rate Sensor …');
-    hrDevice=await navigator.bluetooth.requestDevice({filters:[{services:[HR_SERVICE]}]});log(`HR-Gerät ausgewählt: ${hrDevice.name||'Unbekannt'}`);hrDevice.addEventListener('gattserverdisconnected',onHRDisconnected);
-    hrServer=await hrDevice.gatt.connect();const svc=await hrServer.getPrimaryService(HR_SERVICE);hrCharacteristic=await svc.getCharacteristic(HR_MEASUREMENT);await hrCharacteristic.startNotifications();hrCharacteristic.addEventListener('characteristicvaluechanged',handleHeartRate);
-    document.getElementById('hrStatus').textContent=`HRM: ${hrDevice.name||'verbunden'}`;log('Heart Rate Notifications aktiv.');
-  }catch(e){document.getElementById('hrStatus').textContent='HRM: Fehler';log('HRM FEHLER: '+(e?.message||String(e)));}
-}
-
-function handleHeartRate(event){const v=event.target.value,flags=v.getUint8(0);latestHeartRate=(flags&1)?v.getUint16(1,true):v.getUint8(1);document.getElementById('heartRate').textContent=latestHeartRate;}
-function onHRDisconnected(){document.getElementById('hrStatus').textContent='HRM: getrennt';latestHeartRate=null;document.getElementById('heartRate').textContent='--';log('HRM getrennt.');}
-function disconnectHRM(){if(hrDevice?.gatt?.connected)hrDevice.gatt.disconnect();onHRDisconnected();}
-
-function handleBikeData(event){
-  try{
-    const v=event.target.value;let i=0;if(v.byteLength<2)return;const flags=v.getUint16(i,true);i+=2;let speed=null,cadence=null,power=null;
-    if((flags&0x0001)===0&&i+2<=v.byteLength){speed=v.getUint16(i,true)/100;i+=2;}if(flags&0x0002)i+=2;
-    if(flags&0x0004&&i+2<=v.byteLength){cadence=v.getUint16(i,true)/2;i+=2;}if(flags&0x0008)i+=2;if(flags&0x0010)i+=3;if(flags&0x0020)i+=2;
-    if(flags&0x0040&&i+2<=v.byteLength){power=v.getInt16(i,true);i+=2;}
-    if(speed!==null){latestRawSpeed=speed;document.getElementById('rawSpeed').textContent=speed.toFixed(1);const now=performance.now();if(rawDistanceLastTs!==null)rawDistanceM+=(speed/3.6)*Math.max(0,Math.min(2,(now-rawDistanceLastTs)/1000));rawDistanceLastTs=now;}
-    if(cadence!==null){latestCadence=cadence;document.getElementById('cadence').textContent=Math.round(cadence);}
-    if(power!==null){latestPower=Math.max(0,power);document.getElementById('power').textContent=power;}
-  }catch(e){log('DATA PARSE ERROR: '+(e?.message||rawError(e)));}
-}
-
-async function requestControl(){if(!controlPointCharacteristic)return;log('Sende FTMS Request Control …');await writeControl(new Uint8Array([0x00]));}
-async function setTargetPower(watts){if(!controlPointCharacteristic)throw new Error('Control Point nicht verbunden.');const b=new ArrayBuffer(3),v=new DataView(b);v.setUint8(0,0x05);v.setInt16(1,watts,true);log(`Sende Target Power: ${watts} W`);await writeControl(new Uint8Array(b));}
-async function writeControl(data){if(typeof controlPointCharacteristic.writeValueWithResponse==='function')await controlPointCharacteristic.writeValueWithResponse(data);else await controlPointCharacteristic.writeValue(data);}
-function handleControlResponse(event){const v=event.target.value,bytes=new Uint8Array(v.buffer,v.byteOffset,v.byteLength),hex=Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join(' ');log('Control Response: '+hex);if(bytes.length>=3&&bytes[0]===0x80){const map={1:'SUCCESS',2:'OPCODE NOT SUPPORTED',3:'INVALID PARAMETER',4:'OPERATION FAILED',5:'CONTROL NOT PERMITTED'};log(`FTMS Opcode 0x${bytes[1].toString(16).padStart(2,'0')} → ${map[bytes[2]]||bytes[2]}`);}}
-
-function powerRequired(v,cda=model.cda){const m=model.riderKg+model.bikeKg,g=9.80665,grade=Math.atan(model.grade),wind=model.windKmh/3.6,airV=Math.max(0,v+wind);return .5*model.rho*cda*airV*airV*v+model.crr*m*g*Math.cos(grade)*v+m*g*Math.sin(grade)*v;}
-function solveSteadySpeed(power,cda=model.cda){if(power<=0)return 0;let lo=0,hi=40;for(let n=0;n<80;n++){const mid=(lo+hi)/2;if(powerRequired(mid,cda)<power)lo=mid;else hi=mid;}return (lo+hi)/2;}
-function simulationTick(){
-  const now=performance.now(),dt=Math.max(0,Math.min(.5,(now-simLastTs)/1000));simLastTs=now;if(!running)return;
-  const m=model.riderKg+model.bikeKg,g=9.80665,v=virtualSpeedMs,wind=model.windKmh/3.6,rel=Math.max(0,v+wind);
-  const aero=.5*model.rho*model.cda*rel*rel,roll=model.crr*m*g,gradeF=m*g*Math.sin(Math.atan(model.grade));const drive=latestPower/Math.max(v,2.5);let a=(drive-aero-roll-gradeF)/m;a=Math.max(-3,Math.min(1.5,a));virtualSpeedMs=Math.max(0,v+a*dt);virtualDistanceM+=virtualSpeedMs*dt;mechanicalWorkJ+=latestPower*dt;
-  document.getElementById('virtualSpeed').textContent=(virtualSpeedMs*3.6).toFixed(1);document.getElementById('virtualDistance').textContent=(virtualDistanceM/1000).toFixed(2);document.getElementById('workKj').textContent=Math.round(mechanicalWorkJ/1000);
-}
-function resetVirtualModel(){if(running){log('Reset während laufender Session blockiert.');return;}virtualSpeedMs=0;virtualDistanceM=0;mechanicalWorkJ=0;document.getElementById('virtualSpeed').textContent='0.0';document.getElementById('virtualDistance').textContent='0.00';document.getElementById('workKj').textContent='0';log('Virtuelles Speed-/Distanzmodell zurückgesetzt.');}
-function setBikeProfile(type){if(running){log('Bike-Profilwechsel während laufender Session blockiert.');return;}model.cda=type==='road'?.30:.23;document.getElementById('roadBtn').classList.toggle('active',type==='road');document.getElementById('triBtn').classList.toggle('active',type==='tri');log(`Virtuelles Bike-Profil: ${type==='road'?'RENNRAD':'TRI'} · CdA ${model.cda.toFixed(2)}`);}
-function runPhysicsSelfTest(){
-  const refs={road:{100:26.6706,140:30.4450,180:33.5125,250:37.8813,300:40.4989},tri:{100:28.8673,140:33.0191,180:36.3900,250:41.1865,300:44.0584}};let maxErr=0,lines=[];
-  for(const [name,cda] of [['road',.30],['tri',.23]]){for(const p of [100,140,180,250,300]){const kmh=solveSteadySpeed(p,cda)*3.6,err=Math.abs(kmh-refs[name][p]);maxErr=Math.max(maxErr,err);lines.push(`${name==='road'?'ROAD':'TRI '} ${String(p).padStart(3)} W → ${kmh.toFixed(2)} km/h · ΔRef ${err.toFixed(3)}`);}}
-  const d=10*60/1000;const distPass=Math.abs(d-.6)<1e-12,pass=maxErr<.01&&distPass;lines.push(`Distanzintegrator: 36 km/h × 60 s = ${d.toFixed(3)} km · ${distPass?'PASS':'FAIL'}`);lines.push(`Numerische Referenzabweichung max. ${maxErr.toFixed(4)} km/h · ${pass?'PASS':'FAIL'}`);document.getElementById('physicsDiag').textContent=lines.join('\n');document.getElementById('physicsDiag').className='diag '+(pass?'ok':'warn');log(`Physikmodell Selbsttest: ${pass?'PASS':'FAIL'}`);
-}
-
-async function startWorkout(){
-  if(!trainerReady()||!workout)return;
-  try{
-    await requestControl();resetSessionRecording();resetVirtualModel();sessionStartedAt=new Date();running=true;currentStepIndex=0;startRecording();log('Workout gestartet. Bike-Profil für Session gesperrt.');await beginCurrentStep();updateButtons();
-  }catch(e){running=false;stopRecording();log('START FEHLER: '+(e?.message||rawError(e)));updateButtons();}
-}
-function resetSessionRecording(){sessionSamples=[];sessionStartedAt=null;sessionEndedAt=null;lastFitBytes=null;lastFitFilename=null;document.getElementById('fitStatus').textContent='FIT: Aufnahme bereit';document.getElementById('fitDiag').textContent='Session-Aufzeichnung bereit.';updateButtons();}
-function startRecording(){captureSample();clearInterval(recordTimer);recordTimer=setInterval(captureSample,1000);}
-function stopRecording(){clearInterval(recordTimer);recordTimer=null;}
-function captureSample(){if(!running||!sessionStartedAt)return;sessionSamples.push({timestamp:new Date(),power:Number.isFinite(latestPower)?latestPower:null,cadence:Number.isFinite(latestCadence)?latestCadence:null,heartRate:Number.isFinite(latestHeartRate)?latestHeartRate:null,speed:virtualSpeedMs,distance:virtualDistanceM,targetPower:(workout&&currentStepIndex>=0&&workout.steps[currentStepIndex])?workout.steps[currentStepIndex].targetPower:null,stepIndex:currentStepIndex});document.getElementById('fitStatus').textContent=`FIT: ${sessionSamples.length} Samples`}
-async function beginCurrentStep(){if(!workout||currentStepIndex<0||currentStepIndex>=workout.steps.length){await finishWorkout();return;}const step=workout.steps[currentStepIndex];stepStartedAt=Date.now();log(`Schritt ${currentStepIndex+1}/${workout.steps.length}: ${step.name} · ${step.durationSec}s · ${step.targetPower}W`);await setTargetPower(step.targetPower);renderStep();clearInterval(timerId);timerId=setInterval(tick,250);}
-function tick(){if(!running||!workout||currentStepIndex<0)return;const step=workout.steps[currentStepIndex],elapsed=(Date.now()-stepStartedAt)/1000;document.getElementById('timerPill').textContent=`${fmt(elapsed)} / ${fmt(step.durationSec)}`;if(elapsed>=step.durationSec)advanceStep('AUTO');}
-async function advanceStep(reason){if(!running)return;clearInterval(timerId);log(`${reason}: Schritt ${currentStepIndex+1} beendet.`);currentStepIndex++;if(currentStepIndex>=workout.steps.length)await finishWorkout();else await beginCurrentStep();}
-async function skipStep(){if(!running)return;log(`SKIP gedrückt bei Schritt ${currentStepIndex+1}.`);await advanceStep('SKIP');}
-async function finishWorkout(){clearInterval(timerId);captureSample();running=false;stopRecording();sessionEndedAt=new Date();currentStepIndex=workout?workout.steps.length:-1;stepStartedAt=null;log(`Workout beendet. Samples: ${sessionSamples.length}. Virtuell: ${(virtualDistanceM/1000).toFixed(2)} km · ${Math.round(mechanicalWorkJ/1000)} kJ.`);try{await setTargetPower(100);}catch(e){log('Cooldown-Hinweis: '+(e?.message||rawError(e)));}renderStep();document.getElementById('fitStatus').textContent=`FIT: ${sessionSamples.length} Samples bereit`;updateButtons();}
-function renderStep(){
-  if(!workout){document.getElementById('stepName').textContent='–';return;}
-  if(currentStepIndex>=0&&currentStepIndex<workout.steps.length){const s=workout.steps[currentStepIndex];document.getElementById('stepName').textContent=s.name;document.getElementById('targetPill').textContent=`Ziel ${s.targetPower} W`;document.getElementById('timerPill').textContent=`0:00 / ${fmt(s.durationSec)}`;document.getElementById('stepPill').textContent=`Schritt ${currentStepIndex+1} / ${workout.steps.length}`;const n=workout.steps[currentStepIndex+1];document.getElementById('nextStep').textContent=n?`${n.name} · ${n.durationSec}s @ ${n.targetPower} W`:'Workout-Ende';}
-  else if(currentStepIndex>=workout.steps.length){document.getElementById('stepName').textContent='Fertig';document.getElementById('targetPill').textContent='Cooldown 100 W';document.getElementById('timerPill').textContent='–';document.getElementById('stepPill').textContent=`${workout.steps.length} / ${workout.steps.length}`;document.getElementById('nextStep').textContent='–';}
-  else{document.getElementById('stepName').textContent='Bereit';document.getElementById('targetPill').textContent='Ziel -- W';document.getElementById('timerPill').textContent='0:00 / 0:00';document.getElementById('stepPill').textContent=`0 / ${workout.steps.length}`;const n=workout.steps[0];document.getElementById('nextStep').textContent=n?`${n.name} · ${n.durationSec}s @ ${n.targetPower} W`:'–';}
-}
-
-async function buildAndValidateFit(){
-  if(sessionSamples.length<2||!sessionStartedAt){log('FIT: zu wenige Samples.');return;}
-  const box=document.getElementById('fitDiag');box.textContent='Lade offizielles Garmin FIT SDK …';
-  try{
-    const {Encoder,Decoder,Stream,Profile}=await import(FIT_SDK_URL);log('Garmin FIT SDK geladen.');
-    const encoder=new Encoder(),start=sessionStartedAt,end=sessionEndedAt||sessionSamples.at(-1).timestamp,duration=Math.max(1,(end-start)/1000);
-    encoder.writeMesg({mesgNum:Profile.MesgNum.FILE_ID,manufacturer:'development',product:1,serialNumber:360001,timeCreated:start,type:'activity'});
-    encoder.writeMesg({mesgNum:Profile.MesgNum.EVENT,timestamp:start,event:'timer',eventType:'start'});
-    for(const s of sessionSamples){const rec={mesgNum:Profile.MesgNum.RECORD,timestamp:s.timestamp,distance:s.distance,speed:s.speed,enhancedSpeed:s.speed};if(Number.isFinite(s.power))rec.power=Math.round(s.power);if(Number.isFinite(s.cadence))rec.cadence=Math.round(s.cadence);if(Number.isFinite(s.heartRate))rec.heartRate=Math.round(s.heartRate);encoder.writeMesg(rec);}
-    encoder.writeMesg({mesgNum:Profile.MesgNum.EVENT,timestamp:end,event:'timer',eventType:'stopAll'});
-    const p=sessionSamples.map(x=>x.power),h=sessionSamples.map(x=>x.heartRate),c=sessionSamples.map(x=>x.cadence),sp=sessionSamples.map(x=>x.speed);
-    const common={timestamp:end,startTime:start,totalElapsedTime:duration,totalTimerTime:duration,totalDistance:virtualDistanceM,sport:'cycling',subSport:'indoorCycling',avgSpeed:avg(sp),maxSpeed:maxVal(sp),avgPower:avg(p),maxPower:maxVal(p),avgCadence:avg(c),maxCadence:maxVal(c),avgHeartRate:avg(h),maxHeartRate:maxVal(h),totalWork:Math.round(mechanicalWorkJ)};
-    encoder.writeMesg({mesgNum:Profile.MesgNum.LAP,messageIndex:0,...common});
-    encoder.writeMesg({mesgNum:Profile.MesgNum.SESSION,messageIndex:0,...common,firstLapIndex:0,numLaps:1});
-    encoder.writeMesg({mesgNum:Profile.MesgNum.ACTIVITY,timestamp:end,totalTimerTime:duration,numSessions:1});
-    const bytes=encoder.close();
-    const stream=Stream.fromByteArray(Array.from(bytes)),decoder=new Decoder(stream),isFit=decoder.isFIT(),integrity=decoder.checkIntegrity();const decoded=decoder.read({convertTypesToStrings:true,convertDateTimesToDates:true});
-    const recCount=decoded?.messages?.recordMesgs?.length ?? decoded?.messages?.record?.length ?? sessionSamples.length;
-    lastFitBytes=bytes;lastFitFilename=`${start.toISOString().slice(0,10)}-${safeName(workout?.name)}.fit`;
-    box.textContent=`FIT erzeugt: ${bytes.length} Bytes\nisFIT: ${isFit}\nIntegrity: ${integrity}\nSamples geschrieben: ${sessionSamples.length}\nDecoded Records: ${recCount}\nDatei: ${lastFitFilename}`;box.className='diag '+(isFit&&integrity?'ok':'warn');document.getElementById('fitStatus').textContent=`FIT: ${isFit&&integrity?'VALID ✅':'prüfen ⚠️'}`;log(`FIT Export: isFIT=${isFit} integrity=${integrity} bytes=${bytes.length}`);updateButtons();
-  }catch(e){lastFitBytes=null;box.textContent=`FIT FEHLER: ${e?.message||String(e)}\n${rawError(e)}`;box.className='diag warn';document.getElementById('fitStatus').textContent='FIT: Fehler';log('FIT FEHLER: '+(e?.message||String(e)));updateButtons();}
-}
-function downloadLastFit(){if(!lastFitBytes)return;const blob=new Blob([lastFitBytes],{type:'application/octet-stream'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=lastFitFilename||'360-coach-ride.fit';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);log('FIT Download ausgelöst: '+a.download);}
-
-function disconnectTrainer(){if(device?.gatt?.connected)device.gatt.disconnect();onTrainerDisconnected();}
-function onTrainerDisconnected(){setStatus('Nicht verbunden');latestPower=0;latestCadence=null;latestRawSpeed=null;rawDistanceLastTs=null;document.getElementById('power').textContent='--';document.getElementById('cadence').textContent='--';document.getElementById('rawSpeed').textContent='--';log('KICKR getrennt.');updateButtons();}
-
-log('360° Coach Ride Diagnostics v5 geladen.');
-if('bluetooth' in navigator)log('Web Bluetooth erkannt.');else log('Web Bluetooth NICHT erkannt.');
-loadWorkout('workouts/current.json','GitHub current.json');runPhysicsSelfTest();updateButtons();
-</script>
 </body>
 </html>
