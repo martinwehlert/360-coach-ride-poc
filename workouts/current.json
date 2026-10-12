@@ -1,0 +1,10 @@
+{
+  "id": "ftms-short-test-001",
+  "name": "FTMS Kurztest – 4 × 30 s",
+  "steps": [
+    {"name": "Locker", "durationSec": 30, "targetPower": 100},
+    {"name": "Mittel", "durationSec": 30, "targetPower": 140},
+    {"name": "Höher", "durationSec": 30, "targetPower": 180},
+    {"name": "Locker", "durationSec": 30, "targetPower": 100}
+  ]
+}
