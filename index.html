@@ -3,65 +3,100 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>360° Coach – KICKR Kurztest v3</title>
+  <title>360° Coach – Ride Diagnostics v4</title>
   <style>
-    *{box-sizing:border-box} body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0b1220;color:#fff;margin:0;padding:18px}
-    .wrap{max-width:760px;margin:auto} h1{margin:0 0 4px;font-size:28px}.sub,.muted{color:#9aa7bd}.sub{margin-bottom:18px}
-    .card{background:#151e2e;border-radius:16px;padding:18px;margin-bottom:14px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    .metric{text-align:center;background:#1d283a;border-radius:12px;padding:16px 4px}.value{font-size:30px;font-weight:700}.label{color:#9aa7bd;font-size:12px;margin-top:3px}
-    button{width:100%;border:0;border-radius:12px;padding:14px;margin:5px 0;font-size:16px;font-weight:650}.primary{background:#fff;color:#0b1220}.secondary{background:#27354b;color:#fff}.skip{background:#38577e;color:#fff}.danger{background:#55252c;color:#fff}button:disabled{opacity:.4}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.big{font-size:34px;font-weight:750}.pill{display:inline-block;background:#27354b;border-radius:999px;padding:5px 9px;margin-right:6px;font-size:12px}
-    #log{background:#070c14;padding:12px;border-radius:10px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;min-height:120px;max-height:260px;overflow:auto}
+    *{box-sizing:border-box}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0b1220;color:#fff;margin:0;padding:16px}
+    .wrap{max-width:820px;margin:auto} h1{margin:0 0 4px;font-size:28px}.sub,.muted{color:#9aa7bd}.sub{margin-bottom:16px}
+    .card{background:#151e2e;border-radius:16px;padding:16px;margin-bottom:12px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+    .metric{text-align:center;background:#1d283a;border-radius:12px;padding:14px 5px}.value{font-size:28px;font-weight:750}.value.smallv{font-size:23px}.label{color:#9aa7bd;font-size:11px;margin-top:3px}
+    .big{font-size:30px;font-weight:750}.pill{display:inline-block;background:#27354b;border-radius:999px;padding:5px 9px;margin:4px 5px 0 0;font-size:12px}
+    button{width:100%;border:0;border-radius:12px;padding:13px;margin:4px 0;font-size:15px;font-weight:650}.primary{background:#fff;color:#0b1220}.secondary{background:#27354b;color:#fff}.skip{background:#38577e;color:#fff}.danger{background:#55252c;color:#fff}.profile.active{outline:2px solid #fff}.profile{background:#27354b;color:#fff}
+    button:disabled{opacity:.4}.section-title{font-size:13px;font-weight:700;color:#bac5d7;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em}
+    .statusline{display:flex;justify-content:space-between;gap:10px;align-items:center}.statusdot{font-size:12px;color:#9aa7bd;text-align:right}
+    #log{background:#070c14;padding:12px;border-radius:10px;white-space:pre-wrap;word-break:break-word;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;min-height:150px;max-height:320px;overflow:auto}
+    .diag{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.55;color:#cbd5e1;white-space:pre-wrap}
+    .note{font-size:12px;color:#9aa7bd;line-height:1.45;margin-top:8px}
+    @media(max-width:520px){.grid3{grid-template-columns:repeat(3,1fr)}.value{font-size:23px}.value.smallv{font-size:20px}.card{padding:14px}body{padding:10px}}
   </style>
 </head>
 <body>
 <div class="wrap">
   <h1>360° Coach</h1>
-  <div class="sub">KICKR FTMS Kurztest v3 · Workout aus workouts/current.json</div>
+  <div class="sub">Ride Diagnostics v4 · FTMS · HRM-Pro · virtuelle Geschwindigkeit</div>
 
   <div class="card">
-    <div id="status" class="big">Nicht verbunden</div>
-    <div id="workoutName" class="muted">Workout wird geladen …</div>
-  </div>
-
-  <div class="card metrics">
-    <div class="metric"><div id="power" class="value">--</div><div class="label">WATT IST</div></div>
-    <div class="metric"><div id="cadence" class="value">--</div><div class="label">RPM</div></div>
-    <div class="metric"><div id="speed" class="value">--</div><div class="label">KM/H</div></div>
+    <div class="statusline"><div><div id="status" class="big">Nicht verbunden</div><div id="workoutName" class="muted">Workout wird geladen …</div></div><div id="hrStatus" class="statusdot">HRM: nicht verbunden</div></div>
   </div>
 
   <div class="card">
-    <div class="muted">AKTUELLER SCHRITT</div>
+    <div class="section-title">Beobachtet · KICKR / HRM</div>
+    <div class="grid3">
+      <div class="metric"><div id="power" class="value">--</div><div class="label">WATT · KICKR</div></div>
+      <div class="metric"><div id="cadence" class="value">--</div><div class="label">RPM · KICKR</div></div>
+      <div class="metric"><div id="heartRate" class="value">--</div><div class="label">BPM · HRM</div></div>
+    </div>
+    <div class="grid2" style="margin-top:8px">
+      <div class="metric"><div id="rawSpeed" class="value smallv">--</div><div class="label">KM/H · FTMS ROH</div></div>
+      <div class="metric"><div id="rawDistance" class="value smallv">--</div><div class="label">KM · FTMS ROH</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Geschätzt · Outdoor-Physikmodell</div>
+    <div class="grid2">
+      <div class="metric"><div id="virtualSpeed" class="value">0.0</div><div class="label">KM/H · VIRTUELL</div></div>
+      <div class="metric"><div id="virtualDistance" class="value">0.00</div><div class="label">KM · VIRTUELL</div></div>
+    </div>
+    <div class="grid2" style="margin-top:8px">
+      <button id="roadBtn" class="profile" onclick="setBikeProfile('road')">RENNRAD · CdA 0,30</button>
+      <button id="triBtn" class="profile active" onclick="setBikeProfile('tri')">TRI · CdA 0,23</button>
+    </div>
+    <div id="modelInfo" class="note">Modell: 79 kg Fahrer + 8 kg Rad · Crr 0,004 · flach · windstill · Luftdichte 1,225 kg/m³. Virtuelle Werte sind Modellschätzungen, keine KICKR-Messung.</div>
+    <button class="secondary" onclick="resetVirtualModel()">VIRTUELLE DISTANZ ZURÜCKSETZEN</button>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Workout</div>
     <div id="stepName" class="big">–</div>
-    <div style="margin-top:8px">
-      <span id="targetPill" class="pill">Ziel -- W</span>
-      <span id="timerPill" class="pill">0:00 / 0:00</span>
-      <span id="stepPill" class="pill">Schritt – / –</span>
-    </div>
-    <div class="muted" style="margin-top:10px">Nächster: <span id="nextStep">–</span></div>
+    <div><span id="targetPill" class="pill">Ziel -- W</span><span id="timerPill" class="pill">0:00 / 0:00</span><span id="stepPill" class="pill">Schritt – / –</span></div>
+    <div class="muted" style="margin-top:8px">Nächster: <span id="nextStep">–</span></div>
   </div>
 
   <div class="card">
-    <button class="primary" onclick="connectTrainer()">KICKR VERBINDEN</button>
+    <div class="section-title">Verbindungen & Steuerung</div>
+    <div class="grid2"><button class="primary" onclick="connectTrainer()">KICKR VERBINDEN</button><button class="primary" onclick="connectHRM()">HRM-PRO VERBINDEN</button></div>
     <button class="secondary" onclick="loadWorkout()">WORKOUT NEU LADEN</button>
-    <div class="row">
-      <button id="startBtn" class="secondary" onclick="startWorkout()" disabled>START</button>
-      <button id="skipBtn" class="skip" onclick="skipStep()" disabled>SKIP ▶</button>
-    </div>
-    <button class="danger" onclick="disconnectTrainer()">VERBINDUNG TRENNEN</button>
+    <div class="grid2"><button id="startBtn" class="secondary" onclick="startWorkout()" disabled>START</button><button id="skipBtn" class="skip" onclick="skipStep()" disabled>SKIP ▶</button></div>
+    <div class="grid2"><button class="danger" onclick="disconnectTrainer()">KICKR TRENNEN</button><button class="danger" onclick="disconnectHRM()">HRM TRENNEN</button></div>
   </div>
 
-  <div class="card"><div class="muted">Debug Log</div><div id="log"></div></div>
+  <div class="card">
+    <div class="section-title">FTMS Capability Probe</div>
+    <div id="capabilities" class="diag">Noch keine Trainerdaten.</div>
+  </div>
+
+  <div class="card"><div class="section-title">Debug Log</div><div id="log"></div></div>
 </div>
 
 <script>
 const FTMS_SERVICE="00001826-0000-1000-8000-00805f9b34fb";
+const FTMS_FEATURE="00002acc-0000-1000-8000-00805f9b34fb";
 const INDOOR_BIKE_DATA="00002ad2-0000-1000-8000-00805f9b34fb";
 const CONTROL_POINT="00002ad9-0000-1000-8000-00805f9b34fb";
 const SUPPORTED_POWER_RANGE="00002ad8-0000-1000-8000-00805f9b34fb";
+const HR_SERVICE="0000180d-0000-1000-8000-00805f9b34fb";
+const HR_MEASUREMENT="00002a37-0000-1000-8000-00805f9b34fb";
 
 let device=null,server=null,ftms=null,bikeDataCharacteristic=null,controlPointCharacteristic=null;
+let hrDevice=null,hrServer=null,hrCharacteristic=null;
 let workout=null,currentStepIndex=-1,stepStartedAt=null,timerId=null,running=false;
+let latestPower=0,latestCadence=null,latestRawSpeed=null,latestRawDistance=null;
+let lastBikeFlags=null,featureSummary='';
+
+const model={riderKg:79,bikeKg:8,cda:0.23,crr:0.004,rho:1.225,grade:0,windKmh:0};
+let virtualSpeedMs=0,virtualDistanceM=0,simLastTs=performance.now();
 
 function log(message){const box=document.getElementById('log');const time=new Date().toLocaleTimeString();box.textContent+=`[${time}] ${message}\n`;box.scrollTop=box.scrollHeight;}
 function setStatus(text){document.getElementById('status').textContent=text;}
@@ -69,71 +104,121 @@ function fmt(sec){sec=Math.max(0,Math.round(sec));return `${Math.floor(sec/60)}:
 function trainerReady(){return !!(device&&device.gatt&&device.gatt.connected&&controlPointCharacteristic);}
 function updateButtons(){document.getElementById('startBtn').disabled=!(trainerReady()&&workout&&!running);document.getElementById('skipBtn').disabled=!(trainerReady()&&workout&&running);}
 function rawError(error){try{return JSON.stringify(error)}catch(e){return String(error)}}
+function uuidShort(uuid){const m=String(uuid).toLowerCase().match(/^0000([0-9a-f]{4})-/);return m?`0x${m[1].toUpperCase()}`:uuid;}
+function readUint24(view,offset){return view.getUint8(offset)|(view.getUint8(offset+1)<<8)|(view.getUint8(offset+2)<<16);}
+function bytesHex(view){const b=new Uint8Array(view.buffer,view.byteOffset,view.byteLength);return Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join(' ');}
 
 async function loadWorkout(){
-  try{
-    const url=`workouts/current.json?ts=${Date.now()}`;
-    log(`Lade Workout: ${url}`);
-    const res=await fetch(url,{cache:'no-store'});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();
-    if(!data.steps||!Array.isArray(data.steps)||data.steps.length===0) throw new Error('Keine gültigen steps.');
-    workout=data; currentStepIndex=-1; running=false;
-    document.getElementById('workoutName').textContent=`${workout.name} · ${workout.steps.length} Schritte`;
-    renderStep(); log(`Workout geladen: ${workout.name}`); updateButtons();
-  }catch(e){workout=null;document.getElementById('workoutName').textContent='Workout konnte nicht geladen werden.';log(`WORKOUT FEHLER: ${e?.message||rawError(e)}`);updateButtons();}
+  try{const url=`workouts/current.json?ts=${Date.now()}`;log(`Lade Workout: ${url}`);const res=await fetch(url,{cache:'no-store'});if(!res.ok)throw new Error(`HTTP ${res.status}`);const data=await res.json();if(!data.steps||!Array.isArray(data.steps)||data.steps.length===0)throw new Error('Keine gültigen steps.');workout=data;currentStepIndex=-1;running=false;document.getElementById('workoutName').textContent=`${workout.name} · ${workout.steps.length} Schritte`;renderStep();log(`Workout geladen: ${workout.name}`);updateButtons();}
+  catch(e){workout=null;document.getElementById('workoutName').textContent='Workout konnte nicht geladen werden.';log(`WORKOUT FEHLER: ${e?.message||rawError(e)}`);updateButtons();}
 }
 
 async function connectTrainer(){
   try{
-    log('Verbindungsversuch über FTMS-Servicefilter.');
-    if(!navigator.bluetooth) throw new Error('Web Bluetooth nicht verfügbar.');
-    log('Web Bluetooth API verfügbar.');
-    device=await navigator.bluetooth.requestDevice({filters:[{services:[FTMS_SERVICE]}]});
-    log(`Gerät ausgewählt: ${device.name||'Unbekannt'}`);
-    device.addEventListener('gattserverdisconnected',onDisconnected);
-    log('Verbinde GATT …'); server=await device.gatt.connect(); log('GATT verbunden.');
-    log('Suche FTMS-Service …'); ftms=await server.getPrimaryService(FTMS_SERVICE); log('FTMS Service gefunden.');
-    bikeDataCharacteristic=await ftms.getCharacteristic(INDOOR_BIKE_DATA); log('Indoor Bike Data gefunden.');
-    await bikeDataCharacteristic.startNotifications(); bikeDataCharacteristic.addEventListener('characteristicvaluechanged',handleBikeData); log('Indoor Bike Data Notifications aktiv.');
-    controlPointCharacteristic=await ftms.getCharacteristic(CONTROL_POINT); log('FTMS Control Point gefunden.');
-    try{await controlPointCharacteristic.startNotifications();controlPointCharacteristic.addEventListener('characteristicvaluechanged',handleControlResponse);log('Control Point Notifications aktiv.');}catch(e){log('Control-Point Notifications Hinweis: '+(e?.message||rawError(e)));}
-    try{const rangeChar=await ftms.getCharacteristic(SUPPORTED_POWER_RANGE);const range=await rangeChar.readValue();if(range.byteLength>=6){const min=range.getInt16(0,true),max=range.getInt16(2,true),step=range.getUint16(4,true);log(`Supported Power Range: ${min}–${max} W | Schritt ${step} W`);}}catch(e){log('Power Range Hinweis: '+(e?.message||rawError(e)));}
+    log('Verbindungsversuch über FTMS-Servicefilter.');if(!navigator.bluetooth)throw new Error('Web Bluetooth nicht verfügbar.');
+    device=await navigator.bluetooth.requestDevice({filters:[{services:[FTMS_SERVICE]}]});log(`Gerät ausgewählt: ${device.name||'Unbekannt'}`);device.addEventListener('gattserverdisconnected',onTrainerDisconnected);
+    log('Verbinde KICKR GATT …');server=await device.gatt.connect();log('KICKR GATT verbunden.');ftms=await server.getPrimaryService(FTMS_SERVICE);log('FTMS Service gefunden.');
+    await probeFTMSCapabilities();
+    bikeDataCharacteristic=await ftms.getCharacteristic(INDOOR_BIKE_DATA);await bikeDataCharacteristic.startNotifications();bikeDataCharacteristic.addEventListener('characteristicvaluechanged',handleBikeData);log('Indoor Bike Data Notifications aktiv.');
+    controlPointCharacteristic=await ftms.getCharacteristic(CONTROL_POINT);try{await controlPointCharacteristic.startNotifications();controlPointCharacteristic.addEventListener('characteristicvaluechanged',handleControlResponse);log('Control Point Notifications aktiv.');}catch(e){log('Control-Point Notifications Hinweis: '+(e?.message||rawError(e)));}
+    try{const rangeChar=await ftms.getCharacteristic(SUPPORTED_POWER_RANGE);const range=await rangeChar.readValue();if(range.byteLength>=6){log(`Supported Power Range: ${range.getInt16(0,true)}–${range.getInt16(2,true)} W | Schritt ${range.getUint16(4,true)} W`);}}catch(e){log('Power Range Hinweis: '+(e?.message||rawError(e)));}
     setStatus(`Verbunden: ${device.name||'KICKR'}`);log('Trainer vollständig verbunden.');await requestControl();updateButtons();
-  }catch(error){setStatus('Fehler');log('FEHLER RAW: '+String(error));log('FEHLER JSON: '+rawError(error));if(error?.name)log('Name: '+error.name);if(error?.message)log('Message: '+error.message);updateButtons();}
+  }catch(error){setStatus('KICKR Fehler');log('KICKR FEHLER: '+(error?.message||String(error)));log('KICKR RAW: '+rawError(error));updateButtons();}
+}
+
+async function probeFTMSCapabilities(){
+  let lines=[];
+  try{
+    const chars=await ftms.getCharacteristics();
+    const list=chars.map(c=>uuidShort(c.uuid)).join(', ');log('FTMS Characteristics: '+list);lines.push('Characteristics: '+list);
+  }catch(e){log('Characteristics-Liste nicht verfügbar: '+(e?.message||rawError(e)));}
+  try{
+    const fc=await ftms.getCharacteristic(FTMS_FEATURE);const v=await fc.readValue();log('Fitness Machine Feature RAW: '+bytesHex(v));
+    if(v.byteLength>=8){
+      const machine=v.getUint32(0,true),target=v.getUint32(4,true);
+      const machineNames=['Ø Speed','Cadence','Total Distance','Inclination','Elevation Gain','Pace','Step Count','Resistance','Stride Count','Energy','Heart Rate','MET','Elapsed Time','Remaining Time','Power','Force/Belt Power','User Data Retention'];
+      const targetNames=['Speed Target','Inclination Target','Resistance Target','Power Target','HR Target','Energy Target','Step Target','Stride Target','Distance Target','Training Time','Time in 2 HR Zones','Time in 3 HR Zones','Time in 5 HR Zones','Indoor Bike Simulation','Wheel Circumference','Spin Down','Cadence Target'];
+      const m=[];for(let i=0;i<machineNames.length;i++)if(machine&(1<<i))m.push(machineNames[i]);
+      const t=[];for(let i=0;i<targetNames.length;i++)if(target&(1<<i))t.push(targetNames[i]);
+      featureSummary=`Feature RAW: ${bytesHex(v)}\nMachine: ${m.join(', ')||'—'}\nTargets: ${t.join(', ')||'—'}`;
+      log('FTMS Machine Features: '+(m.join(', ')||'—'));log('FTMS Target Features: '+(t.join(', ')||'—'));
+      lines.push(featureSummary);
+    }else{lines.push('Feature RAW: '+bytesHex(v));}
+  }catch(e){log('Fitness Machine Feature konnte nicht gelesen werden: '+(e?.message||rawError(e)));}
+  document.getElementById('capabilities').textContent=lines.join('\n');
+}
+
+async function connectHRM(){
+  try{
+    if(!navigator.bluetooth)throw new Error('Web Bluetooth nicht verfügbar.');log('Suche BLE Heart Rate Sensor …');
+    hrDevice=await navigator.bluetooth.requestDevice({filters:[{services:[HR_SERVICE]}]});log(`HR-Gerät ausgewählt: ${hrDevice.name||'Unbekannt'}`);hrDevice.addEventListener('gattserverdisconnected',onHRDisconnected);
+    hrServer=await hrDevice.gatt.connect();const svc=await hrServer.getPrimaryService(HR_SERVICE);hrCharacteristic=await svc.getCharacteristic(HR_MEASUREMENT);await hrCharacteristic.startNotifications();hrCharacteristic.addEventListener('characteristicvaluechanged',handleHeartRate);
+    document.getElementById('hrStatus').textContent=`HRM: ${hrDevice.name||'verbunden'}`;log('Heart Rate Notifications aktiv.');
+  }catch(e){document.getElementById('hrStatus').textContent='HRM: Fehler';log('HRM FEHLER: '+(e?.message||String(e)));log('HRM RAW: '+rawError(e));}
+}
+
+function handleHeartRate(event){
+  try{const v=event.target.value;const flags=v.getUint8(0);const is16=!!(flags&0x01);const hr=is16?v.getUint16(1,true):v.getUint8(1);document.getElementById('heartRate').textContent=hr;}
+  catch(e){log('HR PARSE ERROR: '+(e?.message||rawError(e)));}
 }
 
 async function requestControl(){if(!controlPointCharacteristic)return;log('Sende FTMS Request Control …');await writeControl(new Uint8Array([0x00]));}
 async function setTargetPower(watts){if(!controlPointCharacteristic)throw new Error('Control Point nicht verbunden.');const buffer=new ArrayBuffer(3);const view=new DataView(buffer);view.setUint8(0,0x05);view.setInt16(1,watts,true);log(`Sende Target Power: ${watts} W`);await writeControl(new Uint8Array(buffer));}
-async function writeControl(data){if(typeof controlPointCharacteristic.writeValueWithResponse==='function'){await controlPointCharacteristic.writeValueWithResponse(data);}else{await controlPointCharacteristic.writeValue(data);}}
-
-function handleControlResponse(event){const v=event.target.value;const bytes=new Uint8Array(v.buffer,v.byteOffset,v.byteLength);const hex=Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join(' ');log('Control Response: '+hex);if(bytes.length>=3&&bytes[0]===0x80){const opcode=bytes[1],result=bytes[2];const resultText={1:'SUCCESS',2:'OPCODE NOT SUPPORTED',3:'INVALID PARAMETER',4:'OPERATION FAILED',5:'CONTROL NOT PERMITTED'};log(`FTMS Opcode 0x${opcode.toString(16).padStart(2,'0')} → ${resultText[result]||('Code '+result)}`);}}
+async function writeControl(data){if(typeof controlPointCharacteristic.writeValueWithResponse==='function')await controlPointCharacteristic.writeValueWithResponse(data);else await controlPointCharacteristic.writeValue(data);}
+function handleControlResponse(event){const v=event.target.value;const b=new Uint8Array(v.buffer,v.byteOffset,v.byteLength);const hex=Array.from(b).map(x=>x.toString(16).padStart(2,'0')).join(' ');log('Control Response: '+hex);if(b.length>=3&&b[0]===0x80){const map={1:'SUCCESS',2:'OPCODE NOT SUPPORTED',3:'INVALID PARAMETER',4:'OPERATION FAILED',5:'CONTROL NOT PERMITTED'};log(`FTMS Opcode 0x${b[1].toString(16).padStart(2,'0')} → ${map[b[2]]||('Code '+b[2])}`);}}
 
 function handleBikeData(event){
   try{
-    const value=event.target.value;let i=0;if(value.byteLength<2)return;const flags=value.getUint16(i,true);i+=2;let speed=null,cadence=null,power=null;
-    if((flags&0x0001)===0&&i+2<=value.byteLength){speed=value.getUint16(i,true)/100;i+=2;} if(flags&0x0002)i+=2;
-    if(flags&0x0004&&i+2<=value.byteLength){cadence=value.getUint16(i,true)/2;i+=2;} if(flags&0x0008)i+=2;if(flags&0x0010)i+=3;if(flags&0x0020)i+=2;
-    if(flags&0x0040&&i+2<=value.byteLength){power=value.getInt16(i,true);i+=2;}
-    if(speed!==null)document.getElementById('speed').textContent=speed.toFixed(1);if(cadence!==null)document.getElementById('cadence').textContent=Math.round(cadence);if(power!==null)document.getElementById('power').textContent=power;
+    const v=event.target.value;let i=0;if(v.byteLength<2)return;const flags=v.getUint16(i,true);i+=2;
+    let speed=null,avgSpeed=null,cadence=null,avgCadence=null,totalDistance=null,resistance=null,power=null,avgPower=null,totalEnergy=null,energyHour=null,energyMin=null,ftmsHR=null,met=null,elapsed=null,remaining=null;
+    const have=n=>i+n<=v.byteLength;
+    if((flags&0x0001)===0&&have(2)){speed=v.getUint16(i,true)/100;i+=2;}
+    if(flags&0x0002){if(have(2))avgSpeed=v.getUint16(i,true)/100;i+=2;}
+    if(flags&0x0004){if(have(2))cadence=v.getUint16(i,true)/2;i+=2;}
+    if(flags&0x0008){if(have(2))avgCadence=v.getUint16(i,true)/2;i+=2;}
+    if(flags&0x0010){if(have(3))totalDistance=readUint24(v,i);i+=3;}
+    if(flags&0x0020){if(have(2))resistance=v.getInt16(i,true)/10;i+=2;}
+    if(flags&0x0040){if(have(2))power=v.getInt16(i,true);i+=2;}
+    if(flags&0x0080){if(have(2))avgPower=v.getInt16(i,true);i+=2;}
+    if(flags&0x0100){if(have(5)){totalEnergy=v.getUint16(i,true);energyHour=v.getUint16(i+2,true);energyMin=v.getUint8(i+4);}i+=5;}
+    if(flags&0x0200){if(have(1))ftmsHR=v.getUint8(i);i+=1;}
+    if(flags&0x0400){if(have(1))met=v.getUint8(i)/10;i+=1;}
+    if(flags&0x0800){if(have(2))elapsed=v.getUint16(i,true);i+=2;}
+    if(flags&0x1000){if(have(2))remaining=v.getUint16(i,true);i+=2;}
+
+    if(power!==null){latestPower=Math.max(0,power);document.getElementById('power').textContent=power;}
+    if(cadence!==null){latestCadence=cadence;document.getElementById('cadence').textContent=Math.round(cadence);}
+    if(speed!==null){latestRawSpeed=speed;document.getElementById('rawSpeed').textContent=speed.toFixed(1);}
+    if(totalDistance!==null){latestRawDistance=totalDistance;document.getElementById('rawDistance').textContent=(totalDistance/1000).toFixed(2);}
+
+    if(flags!==lastBikeFlags){
+      lastBikeFlags=flags;const fields=[];if((flags&1)===0)fields.push('Instant Speed');if(flags&2)fields.push('Avg Speed');if(flags&4)fields.push('Cadence');if(flags&8)fields.push('Avg Cadence');if(flags&16)fields.push('Total Distance');if(flags&32)fields.push('Resistance');if(flags&64)fields.push('Power');if(flags&128)fields.push('Avg Power');if(flags&256)fields.push('Energy');if(flags&512)fields.push('Heart Rate');if(flags&1024)fields.push('MET');if(flags&2048)fields.push('Elapsed Time');if(flags&4096)fields.push('Remaining Time');
+      const observed=`Indoor Bike Data Flags: 0x${flags.toString(16).padStart(4,'0')}\nAktuell gesendet: ${fields.join(', ')||'—'}`;log(observed.replace('\n',' | '));document.getElementById('capabilities').textContent=(featureSummary?featureSummary+'\n':'')+observed;
+    }
   }catch(e){log('DATA PARSE ERROR: '+(e?.message||rawError(e)));}
 }
 
-async function startWorkout(){
-  if(!trainerReady()||!workout)return;
-  try{await requestControl();currentStepIndex=0;running=true;log('Workout gestartet.');await beginCurrentStep();updateButtons();}
-  catch(e){log('START FEHLER: '+(e?.message||rawError(e)));running=false;updateButtons();}
+function setBikeProfile(profile){
+  if(profile==='road'){model.cda=0.30;document.getElementById('roadBtn').classList.add('active');document.getElementById('triBtn').classList.remove('active');}
+  else{model.cda=0.23;document.getElementById('triBtn').classList.add('active');document.getElementById('roadBtn').classList.remove('active');}
+  log(`Virtuelles Bike-Profil: ${profile==='road'?'RENNRAD':'TRI'} · CdA ${model.cda.toFixed(2)}`);
 }
-
-async function beginCurrentStep(){
-  if(!workout||currentStepIndex<0||currentStepIndex>=workout.steps.length){await finishWorkout();return;}
-  const step=workout.steps[currentStepIndex];stepStartedAt=Date.now();
-  log(`Schritt ${currentStepIndex+1}/${workout.steps.length}: ${step.name} · ${step.durationSec}s · ${step.targetPower}W`);
-  await setTargetPower(step.targetPower);renderStep();clearInterval(timerId);timerId=setInterval(tick,250);
+function resetVirtualModel(){virtualSpeedMs=0;virtualDistanceM=0;simLastTs=performance.now();renderVirtual();log('Virtuelles Speed-/Distanzmodell zurückgesetzt.');}
+function renderVirtual(){document.getElementById('virtualSpeed').textContent=(virtualSpeedMs*3.6).toFixed(1);document.getElementById('virtualDistance').textContent=(virtualDistanceM/1000).toFixed(2);}
+function simulateVirtual(){
+  const now=performance.now();let dt=(now-simLastTs)/1000;simLastTs=now;if(dt<=0||dt>1)dt=0.25;
+  const mass=model.riderKg+model.bikeKg,g=9.80665,wind=model.windKmh/3.6;
+  const vAir=Math.max(0,virtualSpeedMs+wind);const fAero=0.5*model.rho*model.cda*vAir*vAir;const fRoll=model.crr*mass*g;const fGrade=mass*g*model.grade;
+  let drive=latestPower/Math.max(virtualSpeedMs,1.5);let accel=(drive-fAero-fRoll-fGrade)/mass;accel=Math.max(-2.5,Math.min(1.5,accel));
+  if(latestPower<1&&virtualSpeedMs<0.15)virtualSpeedMs=0;else virtualSpeedMs=Math.max(0,virtualSpeedMs+accel*dt);
+  virtualDistanceM+=virtualSpeedMs*dt;renderVirtual();
 }
+setInterval(simulateVirtual,250);
 
+async function startWorkout(){if(!trainerReady()||!workout)return;try{resetVirtualModel();await requestControl();currentStepIndex=0;running=true;log('Workout gestartet.');await beginCurrentStep();updateButtons();}catch(e){log('START FEHLER: '+(e?.message||rawError(e)));running=false;updateButtons();}}
+async function beginCurrentStep(){if(!workout||currentStepIndex<0||currentStepIndex>=workout.steps.length){await finishWorkout();return;}const step=workout.steps[currentStepIndex];stepStartedAt=Date.now();log(`Schritt ${currentStepIndex+1}/${workout.steps.length}: ${step.name} · ${step.durationSec}s · ${step.targetPower}W`);await setTargetPower(step.targetPower);renderStep();clearInterval(timerId);timerId=setInterval(tick,250);}
 function tick(){if(!running||!workout||currentStepIndex<0)return;const step=workout.steps[currentStepIndex];const elapsed=(Date.now()-stepStartedAt)/1000;document.getElementById('timerPill').textContent=`${fmt(elapsed)} / ${fmt(step.durationSec)}`;if(elapsed>=step.durationSec)advanceStep('AUTO');}
-async function advanceStep(reason){if(!running)return;clearInterval(timerId);log(`${reason}: Schritt ${currentStepIndex+1} beendet.`);currentStepIndex++;if(currentStepIndex>=workout.steps.length){await finishWorkout();}else{await beginCurrentStep();}}
+async function advanceStep(reason){if(!running)return;clearInterval(timerId);log(`${reason}: Schritt ${currentStepIndex+1} beendet.`);currentStepIndex++;if(currentStepIndex>=workout.steps.length)await finishWorkout();else await beginCurrentStep();}
 async function skipStep(){if(!running)return;log(`SKIP gedrückt bei Schritt ${currentStepIndex+1}.`);await advanceStep('SKIP');}
 async function finishWorkout(){clearInterval(timerId);running=false;currentStepIndex=workout?workout.steps.length:-1;stepStartedAt=null;log('Workout beendet. Setze 100 W Cooldown.');try{await setTargetPower(100);}catch(e){log('Cooldown-Hinweis: '+(e?.message||rawError(e)));}renderStep();updateButtons();}
 
@@ -144,12 +229,12 @@ function renderStep(){
   else{document.getElementById('stepName').textContent='Bereit';document.getElementById('targetPill').textContent='Ziel -- W';document.getElementById('timerPill').textContent='0:00 / 0:00';document.getElementById('stepPill').textContent=`0 / ${workout.steps.length}`;const n=workout.steps[0];document.getElementById('nextStep').textContent=n?`${n.name} · ${n.durationSec}s @ ${n.targetPower} W`:'–';}
 }
 
-function disconnectTrainer(){clearInterval(timerId);running=false;if(device?.gatt?.connected)device.gatt.disconnect();onDisconnected();}
-function onDisconnected(){setStatus('Nicht verbunden');document.getElementById('power').textContent='--';document.getElementById('cadence').textContent='--';document.getElementById('speed').textContent='--';log('Bluetooth-Verbindung getrennt.');updateButtons();}
+function disconnectTrainer(){clearInterval(timerId);running=false;latestPower=0;if(device?.gatt?.connected)device.gatt.disconnect();onTrainerDisconnected();}
+function onTrainerDisconnected(){latestPower=0;setStatus('Nicht verbunden');document.getElementById('power').textContent='--';document.getElementById('cadence').textContent='--';document.getElementById('rawSpeed').textContent='--';log('KICKR Bluetooth-Verbindung getrennt.');updateButtons();}
+function disconnectHRM(){if(hrDevice?.gatt?.connected)hrDevice.gatt.disconnect();onHRDisconnected();}
+function onHRDisconnected(){document.getElementById('heartRate').textContent='--';document.getElementById('hrStatus').textContent='HRM: nicht verbunden';log('HRM Bluetooth-Verbindung getrennt.');}
 
-log('360° Coach FTMS Tester v3 geladen.');
-if('bluetooth' in navigator)log('Web Bluetooth erkannt.');else log('Web Bluetooth NICHT erkannt.');
-loadWorkout();
+log('360° Coach Ride Diagnostics v4 geladen.');if('bluetooth' in navigator)log('Web Bluetooth erkannt.');else log('Web Bluetooth NICHT erkannt.');loadWorkout();renderVirtual();
 </script>
 </body>
 </html>
