@@ -9,7 +9,7 @@ async function connectTrainer(){
     state.trainerConnected=true;await requestControl();state.ergReady=true;log(`KICKR verbunden: ${d.name||'Trainer'}`);toast('KICKR verbunden');updateConnectionUi();
   }catch(e){state.trainerConnected=false;state.ergReady=false;updateConnectionUi();toast('KICKR Verbindung fehlgeschlagen');log('KICKR FEHLER: '+e.message)}
 }
-function onTrainerDisconnected(){state.trainerConnected=false;state.ergReady=false;state.latestPower=0;if(state.sessionActive&&!state.paused){state.paused=true;$('btnPause').innerHTML='<b>▶ <span>FORTSETZEN</span></b><small>KICKR zuerst neu verbinden</small>';toast('KICKR verloren – Training automatisch pausiert')}updateConnectionUi();log('KICKR getrennt.');}
+function onTrainerDisconnected(){state.trainerConnected=false;state.ergReady=false;state.latestPower=0;if(state.sessionActive&&!state.paused){state.paused=true;$('btnPause').innerHTML='<svg class="control-icon"><use href="#i-play"/></svg><span><b>FORTSETZEN</b><small>KICKR zuerst neu verbinden</small></span>';toast('KICKR verloren – Training automatisch pausiert')}updateConnectionUi();log('KICKR getrennt.');}
 async function connectHRM(){
   try{
     if(state.hrConnected){toast('HRM-Pro ist bereits verbunden.');return}
