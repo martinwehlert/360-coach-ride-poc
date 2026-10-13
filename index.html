@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#f4f7fa">
   <title>360° Coach · Pain Cave</title>
-  <link rel="stylesheet" href="styles-v1.css?v=1.0.3">
-  <link rel="stylesheet" href="overrides-v1.css?v=1.0.3">
+  <link rel="stylesheet" href="styles-v1.css?v=1.0.4">
+  <link rel="stylesheet" href="overrides-v1.css?v=1.0.4">
 </head>
 <body>
   <div id="toast" class="toast" aria-live="polite"></div>
@@ -17,6 +17,6 @@
     <section id="screenSummary" class="screen app-screen summary-screen" hidden><div class="summary-shell panel"><img class="summary-logo" src="assets/logo-web.svg" alt="Triathlon Kollektiv Halle"><span class="eyebrow">Session abgeschlossen</span><h1 id="summaryTitle">Training beendet</h1><div class="summary-grid"><div><small>Zeit</small><b id="summaryTime">—</b></div><div><small>Distanz virtuell</small><b id="summaryDistance">—</b></div><div><small>Ø Leistung</small><b id="summaryAvg">—</b></div><div><small>NP</small><b id="summaryNp">—</b></div></div><div id="summaryFit" class="summary-fit">FIT wird vorbereitet …</div><div class="summary-actions"><button id="btnShareFit" class="ghost-btn" disabled>FIT teilen / sichern</button><button id="btnBackMenu" class="cta-gradient">Zurück zum Hauptmenü →</button></div></div></section>
   </main>
   <dialog id="dialogConfirmEnd" class="modal"><form method="dialog" class="modal-card"><h2>Training wirklich beenden?</h2><p>Die bisherige Einheit wird sauber abgeschlossen. Wenn Auto-FIT aktiv ist, wird anschließend eine FIT-Datei erzeugt und validiert.</p><div class="modal-actions"><button value="cancel" class="ghost-btn">Weiterfahren</button><button id="confirmEndRide" value="default" class="danger-btn">Training beenden</button></div></form></dialog><dialog id="dialogWorkouts" class="modal"><div class="modal-card"><div class="modal-head"><h2>Workout wählen</h2><button data-close-dialog="dialogWorkouts">×</button></div><div id="workoutList" class="workout-list"></div></div></dialog><dialog id="dialogHistory" class="modal"><div class="modal-card wide"><div class="modal-head"><h2>Lokale Historie</h2><button data-close-dialog="dialogHistory">×</button></div><div id="historyList" class="history-list"></div></div></dialog><dialog id="dialogSettings" class="modal"><div class="modal-card"><div class="modal-head"><h2>Einstellungen</h2><button data-close-dialog="dialogSettings">×</button></div><div class="settings-form"><label>Fahrergewicht (kg)<input id="settingRiderKg" type="number" min="40" max="150" step="0.1"></label><label>Radgewicht (kg)<input id="settingBikeKg" type="number" min="5" max="25" step="0.1"></label><label>Rennrad CdA<input id="settingRoadCda" type="number" min="0.15" max="0.5" step="0.01"></label><label>Triathlonrad CdA<input id="settingTriCda" type="number" min="0.15" max="0.5" step="0.01"></label><button id="btnSaveSettings" class="cta-gradient">Speichern</button></div></div></dialog><div id="debugDrawer" class="debug-drawer" hidden><div class="debug-head"><b>Debug</b><button id="btnCloseDebug">×</button></div><pre id="debugLog"></pre></div>
-  <script src="ride-core-v1.js?v=1.0.3"></script><script src="ride-trainer-v1.js?v=1.0.3"></script><script src="ride-session-v1.js?v=1.0.3"></script><script src="ride-ui-v1.js?v=1.0.3"></script>
+  <script src="ride-core-v1.js?v=1.0.3"></script><script src="ride-trainer-v1.js?v=1.0.3"></script><script src="ride-session-v1.js?v=1.0.3"></script><script src="ride-ui-v1.js?v=1.0.4"></script>
 </body>
 </html>
