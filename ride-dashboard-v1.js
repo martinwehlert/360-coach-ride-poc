@@ -1,4 +1,4 @@
-/* 360° Coach Ride Dashboard v1.2
+/* 360° Coach Ride Dashboard v1.3
    Presentation + athlete-zone layer + workout schema v3 + workout library. */
 (function(){
   'use strict';
@@ -371,7 +371,27 @@
     }
   }
 
+  function installRidePolish(){
+    if(el('ridePolishV13'))return;
+    const style=document.createElement('style');style.id='ridePolishV13';
+    style.textContent=`
+      @media (orientation:landscape) and (min-width:700px){
+        #screenRide .power-number{justify-self:center;text-align:center;margin-left:0}
+        #screenRide .ride-metric-panel .metric-value{text-align:center}
+        #screenRide .cadence-card .metric-foot,#screenRide .speed-card .metric-foot{text-align:center}
+        #screenRide .block-main p{font-size:12px;line-height:1.22;max-height:44px;margin:5px 0 7px}
+        #screenRide .rpe-pill{font-size:12px;padding:5px 9px}
+      }
+      @media (orientation:landscape) and (min-width:700px) and (max-height:610px){
+        #screenRide .block-main p{font-size:11px;line-height:1.18;max-height:34px}
+        #screenRide .rpe-pill{font-size:11px;padding:4px 8px}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   ensureDashboardStructure();
+  installRidePolish();
   renderZoneBasis();
   injectLibraryUi();
   loadAthleteConfig();
@@ -391,6 +411,19 @@
       const prescription=el('rideBlockPrescription'),nextPrescription=el('rideNextPrescription');
       if(prescription&&s)prescription.textContent=`${fmt(s.durationSec)} @ ${stepTargetLabel(s)}`;
       if(nextPrescription&&next)nextPrescription.textContent=`${fmt(next.durationSec)} @ ${stepTargetLabel(next)}`;
+    };
+  }
+  const baseUpdateRideUi=window.updateRideUi;
+  if(typeof baseUpdateRideUi==='function'){
+    window.updateRideUi=function(){
+      baseUpdateRideUi();
+      const s=typeof currentStep==='function'?currentStep():null;
+      const ring=document.querySelector('#screenRide .timer-ring');
+      if(s&&ring){
+        const remaining=Math.max(0,Number(s.durationSec||0)-Number(state.stepElapsedMs||0)/1000);
+        const frac=Number(s.durationSec)>0?clamp(remaining/Number(s.durationSec),0,1):0;
+        ring.style.background=`conic-gradient(var(--cyan) 0 ${frac*100}%,#e7edf1 ${frac*100}% 100%)`;
+      }
     };
   }
   const baseRenderMenuWorkout=window.renderMenuWorkout;
