@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-13",
+  "workouts": [
+    {
+      "id": "ftms-short-test-001",
+      "path": "workouts/current.json",
+      "label": "FTMS Kurztest"
+    },
+    {
+      "id": "kickr-erg-test-001",
+      "path": "workouts/tredict-bridge-test.json",
+      "label": "KICKR ERG Test"
+    }
+  ]
+}
