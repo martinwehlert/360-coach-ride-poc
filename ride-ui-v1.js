@@ -24,3 +24,67 @@ let debugTaps=0,debugTimer=null;document.querySelectorAll('.brand-copy span').fo
 loadPrefs();syncPrefsUI();loadWorkout('workouts/current.json','360° Coach');loadWorkoutChoices();updateConnectionUi();if(sessionStorage.getItem('painCaveUnlocked')==='1')showScreen('menu');else showScreen('login');log('360° Coach Ride UI v1 geladen.');
 
 window.addEventListener('beforeunload',e=>{if(state.sessionActive){e.preventDefault();e.returnValue='';}});
+
+/* --------------------------------------------------------------------------
+   URL routing patch
+   --------------------------------------------------------------------------
+   We deliberately keep Login, Menu, Ride and Summary in ONE browser document.
+   A real HTML-page reload would tear down the active Web Bluetooth GATT
+   connections to KICKR/HRM. History routes give each view its own URL/state
+   while preserving BLE and the running workout in memory.
+*/
+const _showScreenBase=showScreen;
+const ROUTE_HASH={login:'',menu:'#/menu',ride:'#/ride',summary:'#/summary'};
+let _routeApplying=false;
+
+function currentRoute(){
+  const h=(location.hash||'').replace(/^#\/?/,'').toLowerCase();
+  return ['menu','ride','summary'].includes(h)?h:'login';
+}
+function routeUrl(name){return `${location.pathname}${location.search}${ROUTE_HASH[name]||''}`}
+function setRouteUrl(name,replace=false){
+  const fn=replace?'replaceState':'pushState';
+  history[fn]({screen:name},'',routeUrl(name));
+}
+showScreen=function(name,options={}){
+  const target=['login','menu','ride','summary'].includes(name)?name:'login';
+  _showScreenBase(target);
+  if(!_routeApplying&&!options.noHistory)setRouteUrl(target,!!options.replace);
+};
+
+function guardedRoute(requested){
+  const unlocked=sessionStorage.getItem('painCaveUnlocked')==='1';
+  if(requested==='login')return 'login';
+  if(!unlocked)return 'login';
+  if(requested==='menu')return 'menu';
+  if(requested==='ride')return state.sessionActive?'ride':'menu';
+  if(requested==='summary')return state.sessionEndWall?'summary':'menu';
+  return 'login';
+}
+function applyRouteFromUrl({replaceInvalid=true,fromBrowserNav=false}={}){
+  const requested=currentRoute();
+
+  // Never let browser Back/URL editing silently leave an active workout.
+  if(state.sessionActive&&requested!=='ride'){
+    _routeApplying=true;
+    _showScreenBase('ride');
+    setRouteUrl('ride',true);
+    _routeApplying=false;
+    if(fromBrowserNav&&!$('dialogConfirmEnd').open)$('dialogConfirmEnd').showModal();
+    return;
+  }
+
+  const target=guardedRoute(requested);
+  _routeApplying=true;
+  _showScreenBase(target);
+  if(target!==requested&&replaceInvalid)setRouteUrl(target,true);
+  _routeApplying=false;
+}
+
+window.addEventListener('popstate',()=>applyRouteFromUrl({fromBrowserNav:true}));
+window.addEventListener('hashchange',()=>applyRouteFromUrl({fromBrowserNav:true}));
+
+// Reconcile the URL after the legacy bootstrap above. A direct attempt to
+// open #/menu, #/ride or #/summary without the code is sent back to Login.
+applyRouteFromUrl({replaceInvalid:true});
+log('URL-Routing aktiv: Login → Hauptmenü → Ride → Summary.');
