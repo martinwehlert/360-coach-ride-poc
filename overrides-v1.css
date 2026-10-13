@@ -22,8 +22,44 @@
 .icon-only{border:0;background:transparent;color:var(--ink);display:grid;place-items:center;width:38px;height:38px;border-radius:10px;padding:0}
 .icon-only:hover{background:#eef5f8}
 
-.bike-svg{width:72px;height:72px;color:var(--cyan-dark);margin:4px auto 10px}
-.bike-option[data-bike="tri"] .bike-svg{color:#e7a70f}
+/* --------------------------------------------------------------------------
+   Clean-up requested after first real-device UI review
+   -------------------------------------------------------------------------- */
+/* The quote looked good in the mock-up but adds visual noise in the live app. */
+.login-panel blockquote,.header-quote{display:none!important}
+.login-logo{margin-bottom:28px!important}
+
+/* The info badge had no interaction/function, so it must not suggest one. */
+.bike-card .info-dot{display:none!important}
+
+/* --------------------------------------------------------------------------
+   Bike profile artwork
+   --------------------------------------------------------------------------
+   The generic 24px UI bike glyphs were too schematic when scaled up. The
+   profile cards now use dedicated side-view bike silhouettes with genuinely
+   different road / triathlon geometry. They stay pure SVG assets embedded in
+   CSS, so GitHub Pages/Bluefy need no additional image requests.
+*/
+.bike-option .bike-svg{display:none!important}
+.bike-option::before{
+  content:"";
+  display:block;
+  width:112px;
+  height:72px;
+  margin:2px auto 10px;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+}
+.bike-option[data-bike="road"]::before{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 72'%3E%3Cg fill='none' stroke='%23089fb7' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='22' cy='50' r='16'/%3E%3Ccircle cx='98' cy='50' r='16'/%3E%3Cpath d='M22 50 47 24 64 50 22 50ZM47 24h29L64 50M76 24l22 26M47 24l-6-10M35 14h13M76 24l7-12h11M91 12c-3 0-5 2-5 5s2 5 5 5h5'/%3E%3Ccircle cx='64' cy='50' r='3.4'/%3E%3Cpath d='m64 50-8 8'/%3E%3C/g%3E%3C/svg%3E");
+}
+.bike-option[data-bike="tri"]::before{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 72'%3E%3Cg fill='none' stroke='%23e7a70f' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='22' cy='50' r='16'/%3E%3Ccircle cx='98' cy='50' r='16'/%3E%3Cpath d='M22 50 50 22 65 50 22 50ZM50 22h30L65 50M80 22l18 28M50 22l-4-11M40 11h13M80 22l4-10h23M84 12h17M101 12l6-4'/%3E%3Ccircle cx='65' cy='50' r='3.4'/%3E%3Cpath d='m65 50-8 8M22 35v30' opacity='.22'/%3E%3C/g%3E%3C/svg%3E");
+}
+.bike-option.active::before{filter:drop-shadow(0 5px 8px rgba(19,188,211,.12))}
+.bike-option[data-bike="tri"].active::before{filter:drop-shadow(0 5px 8px rgba(231,167,15,.12))}
+
 .conn-svg{grid-row:1/4;width:36px;height:36px;align-self:center}
 .quick-svg{width:28px;height:28px;color:#31536b;margin-bottom:4px}
 .quick-toggle .quick-svg{margin:0 auto 4px}
@@ -55,7 +91,7 @@
 .login-logo,.brand-logo,.summary-logo{background:transparent}
 
 @media(max-width:760px){
-  .bike-svg{width:60px;height:60px}
+  .bike-option::before{width:96px;height:62px}
   .conn-svg{width:30px;height:30px}
   .quick-svg{width:24px;height:24px}
   .control-icon{width:24px;height:24px}
