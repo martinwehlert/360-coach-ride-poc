@@ -52,7 +52,7 @@
   background-size:contain;
 }
 .bike-option[data-bike="road"]::before{
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 72'%3E%3Cg fill='none' stroke='%23089fb7' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='22' cy='50' r='16'/%3E%3Ccircle cx='98' cy='50' r='16'/%3E%3Cpath d='M22 50 47 24 64 50 22 50ZM47 24h29L64 50M76 24l22 26M47 24l-6-10M35 14h13M76 24l7-12h11M91 12c-3 0-5 2-5 5s2 5 5 5h5'/%3E%3Ccircle cx='64' cy='50' r='3.4'/%3E%3Cpath d='m64 50-8 8'/%3E%3C/g%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 72'%3E%3Cg fill='none' stroke='%23089fb7' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='22' cy='50' r='16'/%3E%3Ccircle cx='98' cy='50' r='16'/%3E%3Cpath d='M22 50 47 24 64 50 22 50ZM47 24h29L64 50M76 24l22 26M47 24l-6-10M35 14h13M76 24l7-12h11M94 12c6 0 10 3 10 8s-4 8-9 8h-4'/%3E%3Ccircle cx='64' cy='50' r='3.4'/%3E%3Cpath d='m64 50-8 8'/%3E%3C/g%3E%3C/svg%3E");
 }
 .bike-option[data-bike="tri"]::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 72'%3E%3Cg fill='none' stroke='%23e7a70f' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='22' cy='50' r='16'/%3E%3Ccircle cx='98' cy='50' r='16'/%3E%3Cpath d='M22 50 50 22 65 50 22 50ZM50 22h30L65 50M80 22l18 28M50 22l-4-11M40 11h13M80 22l4-10h23M84 12h17M101 12l6-4'/%3E%3Ccircle cx='65' cy='50' r='3.4'/%3E%3Cpath d='m65 50-8 8M22 35v30' opacity='.22'/%3E%3C/g%3E%3C/svg%3E");
