@@ -58,14 +58,14 @@ async function loadWorkoutChoices(){
 function workoutPeak(){return state.workout?Math.max(...state.workout.steps.map(s=>Number(s.targetPower||0))):0}
 function keyBlockText(){if(!state.workout)return '—';const m=state.workout.steps.reduce((a,b)=>Number(b.targetPower||0)>Number(a.targetPower||0)?b:a,state.workout.steps[0]);return `${m.name||'Block'} · ${fmt(m.durationSec)}`}
 function renderMenuWorkout(){
-  const w=state.workout;$('menuWorkoutName').textContent=w?.name||'Kein Workout geladen';$('menuKeyBlock').textContent=w?keyBlockText():'—';$('menuDuration').textContent=w?fmt(totalWorkoutSec()):'—';$('menuTarget').textContent=w?`${workoutPeak()} W`:'—';$('checkWorkoutText').textContent=w?`${w.name} · ${fmt(totalWorkoutSec())}`:'Kein Workout';renderWorkoutChart($('menuWorkoutChart'),false)
+  const w=state.workout;$('menuWorkoutName').textContent=w?.name||'Kein Workout geladen';$('menuKeyBlock').textContent=w?keyBlockText():'—';$('menuDuration').textContent=w?fmt(totalWorkoutSec()):'—';$('menuTarget').textContent=w?`${workoutPeak()} W`:'—';$('menuSource').textContent=w?(w._label||'360° Coach'):'—';$('checkWorkoutText').textContent=w?`${w.name} · ${fmt(totalWorkoutSec())}`:'Kein Workout';renderWorkoutChart($('menuWorkoutChart'),false)
 }
 function renderWorkoutList(){const box=$('workoutList');box.innerHTML='';if(!state.workoutChoices.length){box.innerHTML='<p>Keine weiteren Workouts verfügbar.</p>';return}state.workoutChoices.forEach(w=>{const b=document.createElement('button');b.className='workout-choice';b.innerHTML=`<b>${escapeHtml(w.name)}</b><small>${w.steps.length} Blöcke · ${fmt(w.steps.reduce((s,x)=>s+x.durationSec,0))} · ${escapeHtml(w._label||'')}</small>`;b.onclick=async()=>{$('dialogWorkouts').close();await loadWorkout(w._path,w._label)};box.appendChild(b)})}
 function escapeHtml(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
 function renderWorkoutChart(svg,live){
   const w=state.workout;if(!w){svg.innerHTML='';return}const W=live?1200:1000,H=live?220:170,pad=live?32:22;const total=totalWorkoutSec();const peak=Math.max(200,workoutPeak()*1.25);let x=pad;let targetPath=`M ${pad} ${H-pad}`;let cursor=0;const fills=[];
-  w.steps.forEach((s,i)=>{const x1=pad+(cursor/total)*(W-2*pad);cursor+=s.durationSec;const x2=pad+(cursor/total)*(W-2*pad);const y=H-pad-(Number(s.targetPower||0)/peak)*(H-2*pad);targetPath+=` L ${x1} ${y} L ${x2} ${y}`;fills.push(`<rect x="${x1}" y="${y}" width="${Math.max(1,x2-x1)}" height="${H-pad-y}" fill="${i===state.currentStep&&live?'#c8f2f6':'#e7eef3'}" opacity="${live?.7:.9}"/>`) });
+  w.steps.forEach((s,i)=>{const x1=pad+(cursor/total)*(W-2*pad);cursor+=s.durationSec;const x2=pad+(cursor/total)*(W-2*pad);const y=H-pad-(Number(s.targetPower||0)/peak)*(H-2*pad);targetPath+=` L ${x1} ${y} L ${x2} ${y}`;fills.push(`<rect x="${x1}" y="${y}" width="${Math.max(1,x2-x1)}" height="${H-pad-y}" fill="${i===state.currentStep&&live?'#c8f2f6':'#e7eef3'}" opacity="${live?.7:.9}"/>`)});
   targetPath+=` L ${W-pad} ${H-pad}`;
   let actual='';if(live&&state.samples.length){const pts=state.samples.filter(s=>Number.isFinite(s.power)).map(s=>{const xx=pad+((Number.isFinite(s.planSec)?s.planSec:s.activeSec)/total)*(W-2*pad);const yy=H-pad-(s.power/peak)*(H-2*pad);return `${xx},${Math.max(pad,yy)}`});actual=pts.length>1?`<polyline points="${pts.join(' ')}" fill="none" stroke="#079ab2" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`:''}
   const progress=live?Math.min(total,plannedPositionSec()):0;const px=pad+(progress/total)*(W-2*pad);
@@ -84,4 +84,4 @@ function updateChecklist(){
   const loaded=!!state.workout,erg=state.ergReady;$('checkWorkoutIcon').textContent=loaded?'✓':'•';$('checkWorkoutIcon').classList.toggle('muted',!loaded);$('checkErgIcon').textContent=erg?'✓':'•';$('checkErgIcon').classList.toggle('muted',!erg);$('checkErgText').textContent=erg?'Smart Trainer ist bereit':'KICKR noch nicht bereit';
   const count=Number($('checkGarmin').checked)+Number($('checkGear').checked)+Number(loaded)+Number(erg);$('checkCount').textContent=`${count} / 4`;
 }
-function updateStartButton(){$('btnStartTraining').disabled=!(state.workout&&state.trainerConnected&&state.ergReady)}
+function updateStartButton(){const manualReady=$('checkGarmin').checked&&$('checkGear').checked;$('btnStartTraining').disabled=!(state.workout&&state.trainerConnected&&state.ergReady&&manualReady)}
