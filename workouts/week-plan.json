@@ -5,9 +5,9 @@
   "plannedWorkouts": [
     {
       "date": "2026-10-13",
-      "workoutId": "ftms-short-test-001",
+      "workoutId": "bike-aerobic-reentry-55-001",
       "status": "planned",
-      "note": "Technischer Live-Test; wird durch das eigentliche Tagesworkout ersetzt, sobald dieses geplant ist."
+      "note": "55 min lockerer aerober Wiedereinstieg nach Marathonphase; zugleich erster echter Live-Test des Ride Dashboards."
     }
   ]
 }
