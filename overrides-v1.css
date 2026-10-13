@@ -25,31 +25,17 @@
 /* --------------------------------------------------------------------------
    Clean-up requested after first real-device UI review
    -------------------------------------------------------------------------- */
-/* The quote looked good in the mock-up but adds visual noise in the live app. */
 .login-panel blockquote,.header-quote{display:none!important}
 .login-logo{margin-bottom:28px!important}
-
-/* The info badge had no interaction/function, so it must not suggest one. */
 .bike-card .info-dot{display:none!important}
 
 /* --------------------------------------------------------------------------
    Bike profile artwork
-   --------------------------------------------------------------------------
-   The generic 24px UI bike glyphs were too schematic when scaled up. The
-   profile cards now use dedicated side-view bike silhouettes with genuinely
-   different road / triathlon geometry. They stay pure SVG assets embedded in
-   CSS, so GitHub Pages/Bluefy need no additional image requests.
-*/
+   -------------------------------------------------------------------------- */
 .bike-option .bike-svg{display:none!important}
 .bike-option::before{
-  content:"";
-  display:block;
-  width:112px;
-  height:72px;
-  margin:2px auto 10px;
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:contain;
+  content:"";display:block;width:112px;height:72px;margin:2px auto 10px;
+  background-repeat:no-repeat;background-position:center;background-size:contain;
 }
 .bike-option[data-bike="road"]::before{
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 72'%3E%3Cg fill='none' stroke='%23089fb7' stroke-width='4.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='22' cy='50' r='16'/%3E%3Ccircle cx='98' cy='50' r='16'/%3E%3Cpath d='M22 50 47 24 64 50 22 50ZM47 24h29L64 50M76 24l22 26M47 24l-6-10M35 14h13M76 24l7-12h11M94 12c6 0 10 3 10 8s-4 8-9 8h-4'/%3E%3Ccircle cx='64' cy='50' r='3.4'/%3E%3Cpath d='m64 50-8 8'/%3E%3C/g%3E%3C/svg%3E");
@@ -68,31 +54,142 @@
 .control-icon{width:27px;height:27px;color:#294258}
 .start-icon{width:30px;height:30px;fill:none;stroke:currentColor;color:#fff}
 .start-icon path{fill:currentColor;stroke:none}
-.heart-icon{color:#ef5d70}
-.cyan-icon{color:var(--cyan-dark)}
-
-/* Make SVG controls feel like one coherent UI system. */
+.heart-icon{color:#ef5d70}.cyan-icon{color:var(--cyan-dark)}
 .connection-tile,.quick-btn,.secondary-actions button,.control-btn,.ghost-btn,.start-training{touch-action:manipulation}
 .connection-tile:active,.quick-btn:active,.control-btn:active,.ghost-btn:active{transform:translateY(1px)}
-.quick-btn{font-size:16px;align-content:center;gap:4px}
-.quick-btn span{font-size:12px}
+.quick-btn{font-size:16px;align-content:center;gap:4px}.quick-btn span{font-size:12px}
 .secondary-actions button .ui-icon{width:21px;height:21px;color:#31536b}
-.status-chip .cyan-icon{color:var(--cyan-dark)}
-.status-chip .heart-icon{color:#ef5d70}
+.status-chip .cyan-icon{color:var(--cyan-dark)}.status-chip .heart-icon{color:#ef5d70}
 .metric-label .ui-icon{width:18px;height:18px}
-.stats-strip>div{min-width:0}
-.stats-strip>div>svg:first-child{margin-right:2px}
-.control-btn{padding:10px 12px}
-.control-btn>span{display:grid;text-align:left}
-.pause-btn .control-icon{color:#806000}
+.stats-strip>div{min-width:0}.stats-strip>div>svg:first-child{margin-right:2px}
+.control-btn{padding:10px 12px}.control-btn>span{display:grid;text-align:left}.pause-btn .control-icon{color:#806000}
 .summary-actions .icon-btn{gap:9px}
-
-/* The brand SVG is now a true vector asset, not an embedded WebP. */
 .login-logo,.brand-logo,.summary-logo{background:transparent}
+
+/* --------------------------------------------------------------------------
+   Athlete configuration in main menu
+   -------------------------------------------------------------------------- */
+.zone-basis-card{margin-top:12px;padding:10px 12px;border:1px solid #dbe5ec;border-radius:14px;background:#f8fbfc;display:grid;grid-template-columns:auto repeat(3,1fr);gap:5px 12px;align-items:center}
+.zone-basis-label{text-transform:uppercase;letter-spacing:.1em;font-size:10px;font-weight:900;color:#486177;grid-row:1/3}
+.zone-basis-card>div{display:grid;gap:1px}.zone-basis-card small{font-size:9px;text-transform:uppercase;color:#7b8b9a;letter-spacing:.05em}.zone-basis-card b{font-size:13px;color:#10233a}
+.zone-basis-card p{grid-column:2/-1;margin:1px 0 0;font-size:9px;color:#7b8b9a}
+
+/* --------------------------------------------------------------------------
+   Zone scales: compact visual layer, not another dominant chart
+   -------------------------------------------------------------------------- */
+.zone-scale{position:relative;width:100%;margin-top:5px;padding-top:1px;--marker-color:#10233a}
+.zone-track{height:8px;border-radius:999px;overflow:hidden;display:grid;box-shadow:inset 0 0 0 1px rgba(16,35,58,.06)}
+.power-zone-scale .zone-track{grid-template-columns:repeat(5,1fr)}
+.hr-zone-scale .zone-track{grid-template-columns:repeat(7,1fr)}
+.zone-track>span+span{border-left:1px solid rgba(255,255,255,.82)}
+.zone-marker{position:absolute;top:-2px;width:3px;height:14px;border-radius:3px;background:#10233a;transform:translateX(-50%);box-shadow:0 0 0 1px rgba(255,255,255,.9);transition:left .25s ease;z-index:2}
+.zone-marker:before{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:var(--marker-color);border:2px solid #fff;left:50%;top:-4px;transform:translateX(-50%);box-shadow:0 1px 4px rgba(16,35,58,.2)}
+.zone-labels{display:grid;margin-top:4px;text-align:center;line-height:1.02;color:#657789}
+.power-zone-scale .zone-labels{grid-template-columns:repeat(5,1fr)}
+.hr-zone-scale .zone-labels{grid-template-columns:repeat(7,1fr)}
+.zone-labels span{display:grid;min-width:0}.zone-labels b{font-size:9px}.zone-labels small{font-size:8px;white-space:nowrap}
+.zone-labels .z1 b{color:#309fe6}.zone-labels .z2 b{color:#36b85f}.zone-labels .z3 b{color:#dca20a}.zone-labels .z4 b{color:#f07b20}.zone-labels .z5 b,.zone-labels .z5a b{color:#ef4357}.zone-labels .z5b b{color:#d92f45}.zone-labels .z5c b{color:#a70d20}
+#ridePower3s,#rideHeartRate{transition:color .25s ease}
+#rideHrZone{font-weight:700;transition:color .25s ease}
+
+/* --------------------------------------------------------------------------
+   Landscape One-Pager. The actual Bluefy viewport (100dvh) is the constraint.
+   -------------------------------------------------------------------------- */
+@media (orientation:landscape) and (min-width:700px){
+  #screenRide{height:100dvh!important;min-height:0!important;overflow:hidden!important;padding:7px 10px!important}
+  #screenRide .ride-header{height:60px;min-height:60px;margin:0 0 6px;gap:10px;overflow:hidden}
+  #screenRide .brand-logo{width:150px;height:56px}
+  #screenRide .brand-copy{padding-left:10px;min-width:155px}
+  #screenRide .brand-copy strong{font-size:22px;line-height:1}
+  #screenRide .brand-copy span{font-size:14px;line-height:1.2}
+  #screenRide .ride-statuses{gap:6px;min-width:0}
+  #screenRide .status-chip{min-width:96px;padding:6px 8px;border-radius:12px;gap:0 6px}
+  #screenRide .status-svg{width:22px;height:22px}
+  #screenRide .status-chip b{font-size:11px}
+  #screenRide .status-chip small{font-size:9px}
+
+  #screenRide .ride-grid{
+    height:calc(100dvh - 73px)!important;min-height:0;
+    display:grid!important;
+    grid-template-columns:minmax(0,1.7fr) minmax(165px,.82fr) minmax(155px,.72fr)!important;
+    grid-template-rows:minmax(0,1.65fr) minmax(0,.94fr) minmax(0,1.12fr) 55px 62px!important;
+    grid-template-areas:"hero block next" "hr cadence speed" "profile profile profile" "stats stats stats" "controls controls controls"!important;
+    gap:6px!important;overflow:hidden;
+  }
+  #screenRide .panel{border-radius:14px;box-shadow:0 5px 16px rgba(31,60,86,.07)}
+  #screenRide .hero-power{grid-area:hero!important;padding:8px 12px;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(110px,.65fr);grid-template-rows:auto minmax(0,1fr) auto;column-gap:8px;overflow:hidden}
+  #screenRide .hero-power>.eyebrow{grid-column:1/-1;text-align:left;font-size:10px;margin:0}
+  #screenRide .power-number{grid-column:1;grid-row:2;align-self:center;text-align:left;font-size:clamp(68px,10.5vh,112px);line-height:.78;margin-left:4px}
+  #screenRide .power-number small{font-size:.32em}
+  #screenRide .hero-sub{grid-column:2;grid-row:2;align-self:center;justify-self:start;display:grid;gap:4px;text-align:left;text-transform:uppercase;letter-spacing:.09em;font-size:10px}
+  #screenRide .hero-sub b{display:block;font-size:26px;line-height:1;color:var(--cyan-dark)}
+  #screenRide .hero-sub span:last-child{font-size:9px;letter-spacing:.12em}
+  #screenRide .power-zone-scale{grid-column:1/-1;grid-row:3;margin-top:2px}
+
+  #screenRide .block-card{grid-area:block!important;padding:8px 10px;display:grid;grid-template-rows:auto 1fr;overflow:hidden}
+  #screenRide .block-head .eyebrow,#screenRide .next-card .eyebrow{font-size:9px}
+  #screenRide .block-head>b{font-size:11px}
+  #screenRide .block-main{grid-template-columns:minmax(0,1fr) 88px;gap:5px;margin-top:3px;min-height:0}
+  #screenRide .block-main h2{font-size:24px;margin:2px 0;line-height:1}
+  #screenRide .block-main h3{font-size:14px;margin:3px 0}
+  #screenRide .block-main p{font-size:10px;line-height:1.15;margin:3px 0 5px;max-height:24px;overflow:hidden}
+  #screenRide .rpe-pill{font-size:10px;padding:4px 7px}
+  #screenRide .timer-ring{width:82px;height:82px;justify-self:end}
+  #screenRide .timer-ring:before{width:62px;height:62px}
+  #screenRide .timer-ring small{font-size:7px}
+  #screenRide .timer-ring b{font-size:20px}
+
+  #screenRide .next-card{grid-area:next!important;margin:0!important;padding:8px 10px!important;border-top:1px solid rgba(207,220,229,.9)!important;display:grid;grid-template-rows:auto auto auto 1fr;align-content:start;overflow:hidden}
+  #screenRide .next-card h3{font-size:22px;line-height:1;margin:12px 0 4px}
+  #screenRide .next-card p{font-size:12px;margin:0;color:#647587}
+  #screenRide .next-card .mini-profile{align-self:end;height:32px;margin-top:auto}
+  #screenRide .mini-profile i{width:19px}
+
+  #screenRide .ride-metric-panel{padding:7px 10px!important;min-height:0;overflow:hidden;display:grid;align-content:center}
+  #screenRide .hr-card{grid-area:hr!important}.cadence-card{grid-area:cadence!important}.speed-card{grid-area:speed!important}
+  #screenRide .metric-label{font-size:10px}.metric-label .ui-icon{width:14px;height:14px}
+  #screenRide .metric-value{font-size:clamp(28px,5vh,43px);line-height:1;margin:4px 0 1px}
+  #screenRide .metric-value small{font-size:13px}
+  #screenRide .metric-foot{font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #screenRide .hr-zone-scale{margin-top:4px}.hr-zone-scale .zone-track{height:7px}.hr-zone-scale .zone-labels{margin-top:3px}
+
+  #screenRide .profile-card{grid-area:profile!important;padding:6px 10px;display:grid;grid-template-rows:18px minmax(0,1fr);min-height:0;overflow:hidden}
+  #screenRide .profile-head{min-height:0}.profile-head .eyebrow{font-size:9px}
+  #screenRide .legend{font-size:8px;gap:5px}.gold-line,.cyan-line{width:16px;height:2px}.legend .dot{width:6px;height:6px}
+  #screenRide .ride-chart{height:100%!important;min-height:0;margin:0;border-radius:8px}
+
+  #screenRide .stats-strip{grid-area:stats!important;min-height:0;height:55px;border-radius:13px;grid-template-columns:1fr 1.35fr 1fr 1fr}
+  #screenRide .stats-strip>div{padding:5px 9px;gap:4px 7px;flex-wrap:nowrap;overflow:hidden}
+  #screenRide .stat-svg{width:21px;height:21px}
+  #screenRide .stats-strip small{font-size:8px;letter-spacing:.05em;white-space:nowrap}
+  #screenRide .stats-strip b{font-size:16px;white-space:nowrap}
+  #screenRide .stats-strip em{height:20px}
+
+  #screenRide .ride-controls{grid-area:controls!important;grid-template-columns:1.05fr .9fr .9fr 1.15fr 1fr!important;gap:6px;min-height:0}
+  #screenRide .control-btn{min-height:0;height:62px;padding:5px 7px;border-radius:13px;font-size:15px;gap:6px}
+  #screenRide .control-icon{width:21px;height:21px}
+  #screenRide .control-btn small{font-size:8px;line-height:1.05}
+  #screenRide .countdown-overlay b{font-size:76px}
+}
+
+/* Extra compression for the shorter Bluefy landscape viewport seen on older iPads. */
+@media (orientation:landscape) and (min-width:700px) and (max-height:610px){
+  #screenRide .ride-header{height:52px;min-height:52px;margin-bottom:5px}
+  #screenRide .brand-logo{height:48px;width:132px}
+  #screenRide .brand-copy strong{font-size:19px}#screenRide .brand-copy span{font-size:12px}
+  #screenRide .status-chip{padding:4px 7px;min-width:91px}#screenRide .status-svg{width:19px;height:19px}
+  #screenRide .ride-grid{height:calc(100dvh - 64px)!important;grid-template-rows:minmax(0,1.57fr) minmax(0,.88fr) minmax(0,1.02fr) 49px 55px!important;gap:5px!important}
+  #screenRide .power-number{font-size:clamp(62px,10vh,90px)}
+  #screenRide .hero-sub b{font-size:22px}
+  #screenRide .zone-track{height:6px}.zone-labels{margin-top:2px}.zone-labels b{font-size:8px}.zone-labels small{font-size:7px}
+  #screenRide .block-main{grid-template-columns:minmax(0,1fr) 72px}#screenRide .timer-ring{width:70px;height:70px}#screenRide .timer-ring:before{width:52px;height:52px}#screenRide .timer-ring b{font-size:17px}
+  #screenRide .block-main h2{font-size:21px}#screenRide .next-card h3{font-size:19px;margin-top:8px}
+  #screenRide .metric-value{font-size:31px}
+  #screenRide .stats-strip{height:49px}#screenRide .stats-strip b{font-size:14px}#screenRide .stat-svg{width:18px;height:18px}
+  #screenRide .control-btn{height:55px;font-size:13px}#screenRide .control-btn small{font-size:7px}
+}
 
 @media(max-width:760px){
   .bike-option::before{width:96px;height:62px}
-  .conn-svg{width:30px;height:30px}
-  .quick-svg{width:24px;height:24px}
-  .control-icon{width:24px;height:24px}
+  .conn-svg{width:30px;height:30px}.quick-svg{width:24px;height:24px}.control-icon{width:24px;height:24px}
 }
