@@ -1,10 +1,12 @@
 {
+  "schemaVersion": 2,
   "id": "ftms-short-test-001",
   "name": "FTMS Kurztest – 4 × 30 s",
+  "description": "Kurzer Funktionstest für Ride UI, ERG und Blockwechsel.",
   "steps": [
-    {"name": "Locker", "durationSec": 30, "targetPower": 100},
-    {"name": "Mittel", "durationSec": 30, "targetPower": 140},
-    {"name": "Höher", "durationSec": 30, "targetPower": 180},
-    {"name": "Locker", "durationSec": 30, "targetPower": 100}
+    {"name":"Locker","durationSec":30,"targetPower":100,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2,"note":"Locker einrollen."},
+    {"name":"Mittel","durationSec":30,"targetPower":140,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3,"note":"Ruhig kontrolliert."},
+    {"name":"Höher","durationSec":30,"targetPower":180,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":5,"note":"Spürbar, aber sauber."},
+    {"name":"Locker","durationSec":30,"targetPower":100,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2,"note":"Locker ausrollen."}
   ]
 }
