@@ -1,2 +1,8 @@
+/* 360° Coach UI technical overrides */
+[hidden]{display:none!important}
 .countdown-overlay[hidden]{display:none!important}
 .status-chip{cursor:pointer}
+
+/* Only the active app screen may participate in layout. This prevents
+   Summary/Menu/Ride content from leaking below the current screen. */
+.screen[hidden],.modal[hidden],.debug-drawer[hidden]{display:none!important}
