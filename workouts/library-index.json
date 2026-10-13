@@ -3,8 +3,13 @@
   "updatedAt": "2026-10-13",
   "workouts": [
     {
-      "id": "ftms-short-test-001",
+      "id": "bike-aerobic-reentry-55-001",
       "path": "workouts/current.json",
+      "label": "Aerobic Re-entry"
+    },
+    {
+      "id": "ftms-short-test-001",
+      "path": "workouts/ftms-short-test.json",
       "label": "FTMS Kurztest"
     },
     {
