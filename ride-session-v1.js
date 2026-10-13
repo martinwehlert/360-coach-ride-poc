@@ -1,7 +1,7 @@
 function startRecording(){clearInterval(state.recordTimer);captureSample();state.recordTimer=setInterval(captureSample,1000)}
 function stopRecording(){clearInterval(state.recordTimer);state.recordTimer=null}
 function captureSample(){if(!state.sessionActive||state.paused)return;state.samples.push({timestamp:new Date(),activeSec:state.activeElapsedMs/1000,planSec:plannedPositionSec(),power:Number.isFinite(state.latestPower)?state.latestPower:null,cadence:Number.isFinite(state.latestCadence)?state.latestCadence:null,heartRate:Number.isFinite(state.latestHr)?state.latestHr:null,speed:state.virtualSpeedMs,distance:state.virtualDistanceM,stepIndex:state.currentStep,targetPower:effectiveTarget()});updateRideStats()}
-function resetSession(){state.samples=[];state.sessionStartWall=new Date();state.sessionEndWall=null;state.activeElapsedMs=0;state.stepElapsedMs=0;state.currentStep=0;state.effectiveOffset=0;state.lastCountdownSecond=null;state.virtualSpeedMs=0;state.virtualDistanceM=0;state.lastFitBytes=null;state.lastFitFilename=null;state.finishReason='completed';state.lastEngineTs=performance.now();state.powerEvents=[]}
+function resetSession(){state.previewMode=false;document.getElementById('previewBadge')?.remove();state.samples=[];state.sessionStartWall=new Date();state.sessionEndWall=null;state.activeElapsedMs=0;state.stepElapsedMs=0;state.currentStep=0;state.effectiveOffset=0;state.lastCountdownSecond=null;state.virtualSpeedMs=0;state.virtualDistanceM=0;state.latestPower=0;state.latestCadence=null;state.latestHr=null;state.latestRawSpeed=null;state.lastFitBytes=null;state.lastFitFilename=null;state.finishReason='completed';state.lastEngineTs=performance.now();state.powerEvents=[]}
 async function startTraining(){
   if(!state.workout||!state.trainerConnected||!state.ergReady){toast('KICKR und Workout müssen bereit sein.');return}
   await ensureAudio();resetSession();state.paused=false;showScreen('ride');renderRideWorkout();
@@ -92,7 +92,7 @@ function startDashboardPreview(){
 const _finishWorkoutLive=finishWorkout;
 finishWorkout=async function(reason='aborted'){
   if(state.previewMode){
-    state.previewMode=false;state.sessionActive=false;state.paused=false;state.sessionEndWall=null;state.samples=[];state.powerEvents=[];
+    state.previewMode=false;state.sessionActive=false;state.paused=false;state.sessionEndWall=null;state.samples=[];state.powerEvents=[];state.latestPower=0;state.latestCadence=null;state.latestHr=null;state.latestRawSpeed=null;state.virtualSpeedMs=0;state.virtualDistanceM=0;
     document.getElementById('previewBadge')?.remove();
     showScreen('menu');renderMenuWorkout();updateChecklist();updateStartButton();toast('Dashboard-Vorschau beendet');log('Dashboard-Vorschau beendet.');return;
   }
