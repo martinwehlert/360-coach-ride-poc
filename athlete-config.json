@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "athlete": "Martin Wehlert",
+  "updatedAt": "2026-10-13",
+  "cycling": {
+    "ftpW": 270,
+    "lthrBpm": 155
+  },
+  "zoneModels": {
+    "power": {
+      "reference": "FTP",
+      "display": [
+        {"zone": "Z1", "maxPct": 55},
+        {"zone": "Z2", "maxPct": 75},
+        {"zone": "Z3", "maxPct": 90},
+        {"zone": "Z4", "maxPct": 105},
+        {"zone": "Z5", "minPct": 106}
+      ],
+      "note": "Five-colour dashboard display; finer high-intensity interpretation remains available to coaching logic."
+    },
+    "heartRate": {
+      "reference": "Cycling LTHR",
+      "display": [
+        {"zone": "Z1", "maxPct": 80},
+        {"zone": "Z2", "minPct": 81, "maxPct": 89},
+        {"zone": "Z3", "minPct": 90, "maxPct": 93},
+        {"zone": "Z4", "minPct": 94, "maxPct": 99},
+        {"zone": "Z5a", "minPct": 100, "maxPct": 102},
+        {"zone": "Z5b", "minPct": 103, "maxPct": 106},
+        {"zone": "Z5c", "minPct": 107}
+      ]
+    }
+  },
+  "provenance": {
+    "ftp": {
+      "status": "working_value",
+      "source": "current cycling threshold working value",
+      "confidence": "moderate"
+    },
+    "cyclingLthr": {
+      "status": "provisional",
+      "source": "historical_inference_from_cycling_data",
+      "confidence": "moderate",
+      "plannedValidation": "30 min cycling time trial; use last 20 min mean HR as field LTHR marker and power to validate FTP"
+    }
+  }
+}
