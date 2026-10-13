@@ -15,8 +15,8 @@ async function advanceStep(reason){if(state.transitioning||!state.sessionActive)
 async function skipStep(){if(!state.sessionActive||state.paused)return;await advanceStep('SKIP')}
 async function adjustTarget(delta){if(!state.sessionActive||state.paused)return;state.effectiveOffset+=delta;try{await setTargetPower(effectiveTarget());toast(`Zielleistung ${effectiveTarget()} W`)}catch(e){state.effectiveOffset-=delta;toast('Zielleistung konnte nicht geändert werden')}renderRideWorkout()}
 async function togglePause(){
-  if(!state.sessionActive)return;if(!state.paused){state.paused=true;try{await setTargetPower(100)}catch{};$('btnPause').innerHTML='<b>▶ <span>FORTSETZEN</span></b><small>Training weiterführen</small>';toast('Training pausiert');}
-  else{if(!state.trainerConnected||!state.ergReady){toast('KICKR zuerst neu verbinden');return}try{await requestControl();await setTargetPower(effectiveTarget())}catch{toast('ERG konnte nicht fortgesetzt werden');return}state.paused=false;state.lastEngineTs=performance.now();$('btnPause').innerHTML='<b>Ⅱ <span>PAUSE</span></b><small>Training anhalten</small>';toast('Training fortgesetzt')}
+  if(!state.sessionActive)return;if(!state.paused){state.paused=true;try{await setTargetPower(100)}catch{};$('btnPause').innerHTML='<svg class="control-icon"><use href="#i-play"/></svg><span><b>FORTSETZEN</b><small>Training weiterführen</small></span>';toast('Training pausiert');}
+  else{if(!state.trainerConnected||!state.ergReady){toast('KICKR zuerst neu verbinden');return}try{await requestControl();await setTargetPower(effectiveTarget())}catch{toast('ERG konnte nicht fortgesetzt werden');return}state.paused=false;state.lastEngineTs=performance.now();$('btnPause').innerHTML='<svg class="control-icon"><use href="#i-pause"/></svg><span><b>PAUSE</b><small>Training anhalten</small></span>';toast('Training fortgesetzt')}
 }
 async function finishWorkout(reason='aborted'){
   if(!state.sessionActive)return;state.sessionActive=false;state.paused=false;state.finishReason=reason;stopRecording();state.sessionEndWall=new Date();try{await setTargetPower(100)}catch{};log(`Session beendet: ${reason}`);updateRideUi();
