@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#f4f7fa">
   <title>360° Coach · Pain Cave</title>
-  <link rel="stylesheet" href="styles-v1.css">
+  <link rel="stylesheet" href="styles-v1.css?v=1.0.1">
+  <link rel="stylesheet" href="overrides-v1.css?v=1.0.1">
 </head>
 <body>
   <div id="toast" class="toast" aria-live="polite"></div>
@@ -45,7 +46,7 @@
             <div><b id="menuKeyBlock">—</b><span>Schlüsselblock</span></div>
             <div><b id="menuDuration">—</b><span>Gesamtdauer</span></div>
             <div><b id="menuTarget">—</b><span>Peak-Leistung</span></div>
-            <div><b>360° Coach</b><span>Quelle</span></div>
+            <div><b id="menuSource">360° Coach</b><span>Quelle</span></div>
           </div>
           <svg id="menuWorkoutChart" class="workout-chart" viewBox="0 0 1000 170" role="img" aria-label="Workout Profil"></svg>
         </section>
@@ -53,24 +54,16 @@
         <section class="panel bike-card">
           <div class="panel-head"><span class="eyebrow">🚴 Bike-Profil</span><span class="info-dot" title="Beeinflusst die virtuelle Geschwindigkeit">i</span></div>
           <div class="bike-options">
-            <button id="bikeRoad" class="bike-option" data-bike="road">
-              <div class="bike-icon">🚴</div><b>Rennrad</b><span>CdA 0,30</span>
-            </button>
-            <button id="bikeTri" class="bike-option active" data-bike="tri">
-              <div class="bike-icon">🏁</div><b>Triathlonrad</b><span>CdA 0,23</span>
-            </button>
+            <button id="bikeRoad" class="bike-option" data-bike="road"><div class="bike-icon">🚴</div><b>Rennrad</b><span>CdA 0,30</span></button>
+            <button id="bikeTri" class="bike-option active" data-bike="tri"><div class="bike-icon">🏁</div><b>Triathlonrad</b><span>CdA 0,23</span></button>
           </div>
         </section>
 
         <section class="panel connections-card">
           <div class="panel-head"><span class="eyebrow">◉ Verbindungen</span><button id="btnCheckConnections" class="ghost-btn">↻ Verbindungen prüfen</button></div>
           <div class="connection-grid">
-            <button id="btnTrainerConnect" class="connection-tile">
-              <span class="conn-icon">⚡</span><b>KICKR</b><span id="trainerStatusText" class="status-text off">Nicht verbunden</span><small>Smart Trainer</small>
-            </button>
-            <button id="btnHrmConnect" class="connection-tile">
-              <span class="conn-icon">♥</span><b>HRM-Pro</b><span id="hrmStatusText" class="status-text off">Nicht verbunden</span><small>Herzfrequenz</small>
-            </button>
+            <button id="btnTrainerConnect" class="connection-tile"><span class="conn-icon">⚡</span><b>KICKR</b><span id="trainerStatusText" class="status-text off">Nicht verbunden</span><small>Smart Trainer</small></button>
+            <button id="btnHrmConnect" class="connection-tile"><span class="conn-icon">♥</span><b>HRM-Pro</b><span id="hrmStatusText" class="status-text off">Nicht verbunden</span><small>Herzfrequenz</small></button>
           </div>
         </section>
 
@@ -123,22 +116,12 @@
 
         <section class="panel block-card">
           <div class="block-head"><span class="eyebrow">Aktueller Block</span><b id="rideBlockIndex">— / —</b></div>
-          <div class="block-main">
-            <div><h2 id="rideBlockName">—</h2><h3 id="rideBlockPrescription">—</h3><p id="rideBlockNote"></p><span id="rideRpe" class="rpe-pill">RPE: —/10</span></div>
-            <div class="timer-ring"><div><small>Verbleibend</small><b id="rideBlockRemaining">00:00</b></div></div>
-          </div>
+          <div class="block-main"><div><h2 id="rideBlockName">—</h2><h3 id="rideBlockPrescription">—</h3><p id="rideBlockNote"></p><span id="rideRpe" class="rpe-pill">RPE: —/10</span></div><div class="timer-ring"><div><small>Verbleibend</small><b id="rideBlockRemaining">00:00</b></div></div></div>
           <div id="countdownOverlay" class="countdown-overlay" hidden><b id="countdownNumber">5</b><span>Nächster Block</span></div>
-          <div class="next-block">
-            <div class="block-head"><span class="eyebrow">Nächster Block</span><b id="rideNextIndex">—</b></div>
-            <h3 id="rideNextName">—</h3><p id="rideNextPrescription">—</p>
-            <div id="nextMiniProfile" class="mini-profile"></div>
-          </div>
+          <div class="next-block"><div class="block-head"><span class="eyebrow">Nächster Block</span><b id="rideNextIndex">—</b></div><h3 id="rideNextName">—</h3><p id="rideNextPrescription">—</p><div id="nextMiniProfile" class="mini-profile"></div></div>
         </section>
 
-        <section class="panel profile-card">
-          <div class="profile-head"><span class="eyebrow">Trainings-Profil</span><div class="legend"><span class="gold-line"></span>Ziel-Leistung <span class="cyan-line"></span>Aktuelle Leistung <span class="dot"></span>Aktuelle Position</div></div>
-          <svg id="rideWorkoutChart" class="workout-chart ride-chart" viewBox="0 0 1200 220" role="img" aria-label="Live Workout Profil"></svg>
-        </section>
+        <section class="panel profile-card"><div class="profile-head"><span class="eyebrow">Trainings-Profil</span><div class="legend"><span class="gold-line"></span>Ziel-Leistung <span class="cyan-line"></span>Aktuelle Leistung <span class="dot"></span>Aktuelle Position</div></div><svg id="rideWorkoutChart" class="workout-chart ride-chart" viewBox="0 0 1200 220" role="img" aria-label="Live Workout Profil"></svg></section>
 
         <section class="stats-strip">
           <div><span>⌖</span><small>Virtuelle Distanz</small><b id="rideDistance">0,0 km</b></div>
@@ -158,29 +141,20 @@
     </section>
 
     <section id="screenSummary" class="screen app-screen summary-screen" hidden>
-      <div class="summary-shell panel">
-        <img class="summary-logo" src="assets/logo-web.svg" alt="Triathlon Kollektiv Halle">
-        <span class="eyebrow">Session abgeschlossen</span><h1 id="summaryTitle">Training beendet</h1>
-        <div class="summary-grid"><div><small>Zeit</small><b id="summaryTime">—</b></div><div><small>Distanz virtuell</small><b id="summaryDistance">—</b></div><div><small>Ø Leistung</small><b id="summaryAvg">—</b></div><div><small>NP</small><b id="summaryNp">—</b></div></div>
-        <div id="summaryFit" class="summary-fit">FIT wird vorbereitet …</div>
-        <div class="summary-actions"><button id="btnShareFit" class="ghost-btn" disabled>FIT teilen / sichern</button><button id="btnBackMenu" class="cta-gradient">Zurück zum Hauptmenü →</button></div>
-      </div>
+      <div class="summary-shell panel"><img class="summary-logo" src="assets/logo-web.svg" alt="Triathlon Kollektiv Halle"><span class="eyebrow">Session abgeschlossen</span><h1 id="summaryTitle">Training beendet</h1><div class="summary-grid"><div><small>Zeit</small><b id="summaryTime">—</b></div><div><small>Distanz virtuell</small><b id="summaryDistance">—</b></div><div><small>Ø Leistung</small><b id="summaryAvg">—</b></div><div><small>NP</small><b id="summaryNp">—</b></div></div><div id="summaryFit" class="summary-fit">FIT wird vorbereitet …</div><div class="summary-actions"><button id="btnShareFit" class="ghost-btn" disabled>FIT teilen / sichern</button><button id="btnBackMenu" class="cta-gradient">Zurück zum Hauptmenü →</button></div></div>
     </section>
   </main>
 
-  <dialog id="dialogConfirmEnd" class="modal">
-    <form method="dialog" class="modal-card"><h2>Training wirklich beenden?</h2><p>Die bisherige Einheit wird sauber abgeschlossen. Wenn Auto-FIT aktiv ist, wird anschließend eine FIT-Datei erzeugt und validiert.</p><div class="modal-actions"><button value="cancel" class="ghost-btn">Weiterfahren</button><button id="confirmEndRide" value="default" class="danger-btn">Training beenden</button></div></form>
-  </dialog>
-
+  <dialog id="dialogConfirmEnd" class="modal"><form method="dialog" class="modal-card"><h2>Training wirklich beenden?</h2><p>Die bisherige Einheit wird sauber abgeschlossen. Wenn Auto-FIT aktiv ist, wird anschließend eine FIT-Datei erzeugt und validiert.</p><div class="modal-actions"><button value="cancel" class="ghost-btn">Weiterfahren</button><button id="confirmEndRide" value="default" class="danger-btn">Training beenden</button></div></form></dialog>
   <dialog id="dialogWorkouts" class="modal"><div class="modal-card"><div class="modal-head"><h2>Workout wählen</h2><button data-close-dialog="dialogWorkouts">×</button></div><div id="workoutList" class="workout-list"></div></div></dialog>
   <dialog id="dialogHistory" class="modal"><div class="modal-card wide"><div class="modal-head"><h2>Lokale Historie</h2><button data-close-dialog="dialogHistory">×</button></div><div id="historyList" class="history-list"></div></div></dialog>
   <dialog id="dialogSettings" class="modal"><div class="modal-card"><div class="modal-head"><h2>Einstellungen</h2><button data-close-dialog="dialogSettings">×</button></div><div class="settings-form"><label>Fahrergewicht (kg)<input id="settingRiderKg" type="number" min="40" max="150" step="0.1"></label><label>Radgewicht (kg)<input id="settingBikeKg" type="number" min="5" max="25" step="0.1"></label><label>Rennrad CdA<input id="settingRoadCda" type="number" min="0.15" max="0.5" step="0.01"></label><label>Triathlonrad CdA<input id="settingTriCda" type="number" min="0.15" max="0.5" step="0.01"></label><button id="btnSaveSettings" class="cta-gradient">Speichern</button></div></div></dialog>
 
   <div id="debugDrawer" class="debug-drawer" hidden><div class="debug-head"><b>Debug</b><button id="btnCloseDebug">×</button></div><pre id="debugLog"></pre></div>
 
-  <script src="ride-core-v1.js"></script>
-  <script src="ride-trainer-v1.js"></script>
-  <script src="ride-session-v1.js"></script>
-  <script src="ride-ui-v1.js"></script>
+  <script src="ride-core-v1.js?v=1.0.1"></script>
+  <script src="ride-trainer-v1.js?v=1.0.1"></script>
+  <script src="ride-session-v1.js?v=1.0.1"></script>
+  <script src="ride-ui-v1.js?v=1.0.1"></script>
 </body>
 </html>
