@@ -1,8 +1,62 @@
-/* 360° Coach UI technical overrides */
+/* 360° Coach UI technical + asset overrides */
 [hidden]{display:none!important}
 .countdown-overlay[hidden]{display:none!important}
 .status-chip{cursor:pointer}
 
-/* Only the active app screen may participate in layout. This prevents
-   Summary/Menu/Ride content from leaking below the current screen. */
+/* Only the active app screen may participate in layout. */
 .screen[hidden],.modal[hidden],.debug-drawer[hidden]{display:none!important}
+
+/* --------------------------------------------------------------------------
+   Vector icon system
+   -------------------------------------------------------------------------- */
+.icon-sprite{position:absolute;width:0;height:0;overflow:hidden;pointer-events:none}
+.ui-icon,.bike-svg,.conn-svg,.quick-svg,.status-svg,.stat-svg,.control-icon{
+  fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  flex:0 0 auto;display:inline-block;vertical-align:middle
+}
+.ui-icon{width:1.2em;height:1.2em}
+.icon-label,.icon-btn{display:inline-flex;align-items:center;gap:.5em}
+.icon-btn{justify-content:center}
+.field-icon{width:24px;height:24px;color:#60728a}
+.info-dot .ui-icon{width:15px;height:15px}
+.icon-only{border:0;background:transparent;color:var(--ink);display:grid;place-items:center;width:38px;height:38px;border-radius:10px;padding:0}
+.icon-only:hover{background:#eef5f8}
+
+.bike-svg{width:72px;height:72px;color:var(--cyan-dark);margin:4px auto 10px}
+.bike-option[data-bike="tri"] .bike-svg{color:#e7a70f}
+.conn-svg{grid-row:1/4;width:36px;height:36px;align-self:center}
+.quick-svg{width:28px;height:28px;color:#31536b;margin-bottom:4px}
+.quick-toggle .quick-svg{margin:0 auto 4px}
+.status-svg{grid-row:1/3;width:28px;height:28px;align-self:center}
+.stat-svg{width:30px;height:30px;color:#52667b;flex:0 0 auto}
+.control-icon{width:27px;height:27px;color:#294258}
+.start-icon{width:30px;height:30px;fill:none;stroke:currentColor;color:#fff}
+.start-icon path{fill:currentColor;stroke:none}
+.heart-icon{color:#ef5d70}
+.cyan-icon{color:var(--cyan-dark)}
+
+/* Make SVG controls feel like one coherent UI system. */
+.connection-tile,.quick-btn,.secondary-actions button,.control-btn,.ghost-btn,.start-training{touch-action:manipulation}
+.connection-tile:active,.quick-btn:active,.control-btn:active,.ghost-btn:active{transform:translateY(1px)}
+.quick-btn{font-size:16px;align-content:center;gap:4px}
+.quick-btn span{font-size:12px}
+.secondary-actions button .ui-icon{width:21px;height:21px;color:#31536b}
+.status-chip .cyan-icon{color:var(--cyan-dark)}
+.status-chip .heart-icon{color:#ef5d70}
+.metric-label .ui-icon{width:18px;height:18px}
+.stats-strip>div{min-width:0}
+.stats-strip>div>svg:first-child{margin-right:2px}
+.control-btn{padding:10px 12px}
+.control-btn>span{display:grid;text-align:left}
+.pause-btn .control-icon{color:#806000}
+.summary-actions .icon-btn{gap:9px}
+
+/* The brand SVG is now a true vector asset, not an embedded WebP. */
+.login-logo,.brand-logo,.summary-logo{background:transparent}
+
+@media(max-width:760px){
+  .bike-svg{width:60px;height:60px}
+  .conn-svg{width:30px;height:30px}
+  .quick-svg{width:24px;height:24px}
+  .control-icon{width:24px;height:24px}
+}
