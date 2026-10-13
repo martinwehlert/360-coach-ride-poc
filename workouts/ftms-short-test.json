@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 3,
+  "id": "ftms-short-test-001",
+  "name": "FTMS Kurztest – 4 × 30 s",
+  "sport": "cycling",
+  "environment": ["indoor"],
+  "description": "Kurzer Funktionstest für Ride UI, ERG und Blockwechsel.",
+  "classification": {
+    "primaryGoal": "technical-test",
+    "secondaryGoals": ["erg-control", "dashboard-validation"],
+    "recommendedPhases": ["base", "build", "peak", "race-specific"],
+    "expectedSessionRpe": 2,
+    "tags": ["technical-test", "erg", "dashboard"]
+  },
+  "steps": [
+    {"name":"Locker","durationSec":30,"target":{"type":"ftpPercent","value":0.37},"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2,"note":"Locker einrollen."},
+    {"name":"Mittel","durationSec":30,"target":{"type":"ftpPercent","value":0.52},"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3,"note":"Ruhig kontrolliert."},
+    {"name":"Höher","durationSec":30,"target":{"type":"ftpPercent","value":0.67},"cadenceLow":85,"cadenceHigh":95,"expectedRpe":5,"note":"Spürbar, aber sauber."},
+    {"name":"Locker","durationSec":30,"target":{"type":"ftpPercent","value":0.37},"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2,"note":"Locker ausrollen."}
+  ]
+}
