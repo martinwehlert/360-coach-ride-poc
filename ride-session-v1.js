@@ -40,3 +40,84 @@ function updateRideStats(){const ap=avgPower(),np=normalizedPower();$('rideAvgPo
 function updateRideUi(){
   updateLiveSensorText();updateRideStats();const s=currentStep(),rem=s?Math.max(0,s.durationSec-state.stepElapsedMs/1000):0;$('rideBlockRemaining').textContent=fmt(rem);if(s){const progress=Math.max(0,Math.min(1,state.stepElapsedMs/1000/s.durationSec));document.querySelector('.timer-ring').style.background=`conic-gradient(var(--cyan) 0 ${progress*100}%,#e7edf1 ${progress*100}% 100%)`}$('rideElapsed').textContent=fmt(state.activeElapsedMs/1000);$('ridePlanned').textContent=fmt(totalWorkoutSec());$('rideRemaining').textContent=fmt(remainingWorkoutSec());const now=performance.now();if(!updateRideUi._chartTs||now-updateRideUi._chartTs>=1000){renderWorkoutChart($('rideWorkoutChart'),true);updateRideUi._chartTs=now}
 }
+
+/* --------------------------------------------------------------------------
+   Dashboard preview mode
+   --------------------------------------------------------------------------
+   This is deliberately separate from the real START button. It lets us review
+   the Ride UI without weakening the production safety gate that requires a
+   connected KICKR + ERG control. Preview mode never writes trainer commands,
+   never creates history entries and never generates a FIT file.
+*/
+function startDashboardPreview(){
+  if(!state.workout){toast('Zuerst ein Workout laden.');return}
+  resetSession();
+  state.previewMode=true;
+  state.sessionActive=true;
+  state.paused=true;
+  state.currentStep=Math.min(1,state.workout.steps.length-1);
+  const s=currentStep();
+  state.stepElapsedMs=Math.max(0,Math.min(Number(s?.durationSec||0)*.42,Number(s?.durationSec||0)-1))*1000;
+  let before=0;for(let i=0;i<state.currentStep;i++)before+=Number(state.workout.steps[i]?.durationSec||0);
+  state.activeElapsedMs=(before+state.stepElapsedMs/1000)*1000;
+  state.latestPower=Math.max(0,effectiveTarget()+2);
+  state.latestCadence=92;
+  state.latestHr=145;
+  state.virtualSpeedMs=solveSteadySpeed(state.latestPower);
+  state.virtualDistanceM=Math.max(0,state.virtualSpeedMs*(state.activeElapsedMs/1000)*.82);
+  state.powerEvents=[{t:performance.now()-2000,p:state.latestPower-3},{t:performance.now()-1000,p:state.latestPower+1},{t:performance.now(),p:state.latestPower+2}];
+
+  // Seed enough 1 Hz samples so average power, NP and the live chart look real.
+  const sampleCount=Math.max(45,Math.min(180,Math.round(state.activeElapsedMs/1000)));
+  state.samples=[];
+  for(let i=0;i<sampleCount;i++){
+    const wobble=Math.sin(i/5)*5+Math.sin(i/13)*3;
+    const p=Math.max(0,state.latestPower+wobble);
+    const activeSec=Math.max(0,state.activeElapsedMs/1000-sampleCount+i);
+    const planSec=Math.max(0,plannedPositionSec()-sampleCount+i);
+    state.samples.push({timestamp:new Date(Date.now()-(sampleCount-i)*1000),activeSec,planSec,power:p,cadence:91+Math.sin(i/7)*3,heartRate:143+Math.sin(i/11)*3,speed:state.virtualSpeedMs,distance:Math.max(0,state.virtualDistanceM-state.virtualSpeedMs*(sampleCount-i)),stepIndex:state.currentStep,targetPower:effectiveTarget()});
+  }
+
+  showScreen('ride');
+  renderRideWorkout();
+  updateRideUi();
+  const badge=document.getElementById('previewBadge')||document.createElement('div');
+  badge.id='previewBadge';badge.textContent='DASHBOARD-VORSCHAU · keine Trainersteuerung';
+  badge.style.cssText='position:fixed;z-index:180;top:max(8px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);background:#10233a;color:#fff;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.06em;box-shadow:0 6px 18px rgba(16,35,58,.18)';
+  document.body.appendChild(badge);
+  toast('Dashboard-Vorschau geöffnet');
+  log('Dashboard-Vorschau ohne KICKR gestartet.');
+}
+
+const _finishWorkoutLive=finishWorkout;
+finishWorkout=async function(reason='aborted'){
+  if(state.previewMode){
+    state.previewMode=false;state.sessionActive=false;state.paused=false;state.sessionEndWall=null;state.samples=[];state.powerEvents=[];
+    document.getElementById('previewBadge')?.remove();
+    showScreen('menu');renderMenuWorkout();updateChecklist();updateStartButton();toast('Dashboard-Vorschau beendet');log('Dashboard-Vorschau beendet.');return;
+  }
+  return _finishWorkoutLive(reason);
+};
+
+const _adjustTargetLive=adjustTarget;
+adjustTarget=async function(delta){
+  if(state.previewMode){state.effectiveOffset+=delta;state.latestPower=Math.max(0,effectiveTarget()+2);state.virtualSpeedMs=solveSteadySpeed(state.latestPower);renderRideWorkout();updateRideUi();toast(`Vorschau-Zielleistung ${effectiveTarget()} W`);return}
+  return _adjustTargetLive(delta);
+};
+
+const _skipStepLive=skipStep;
+skipStep=async function(){
+  if(state.previewMode){
+    if(state.currentStep<state.workout.steps.length-1)state.currentStep++;else state.currentStep=0;
+    state.effectiveOffset=0;const s=currentStep();state.stepElapsedMs=Number(s?.durationSec||0)*.35*1000;state.latestPower=Math.max(0,effectiveTarget()+2);state.virtualSpeedMs=solveSteadySpeed(state.latestPower);renderRideWorkout();updateRideUi();toast('Vorschau: nächster Block');return;
+  }
+  return _skipStepLive();
+};
+
+const _togglePauseLive=togglePause;
+togglePause=async function(){if(state.previewMode){toast('Pause/Fortsetzen ist in der statischen Vorschau deaktiviert.');return}return _togglePauseLive()};
+
+(function installDashboardPreviewButton(){
+  const host=document.querySelector('.secondary-actions');if(!host||document.getElementById('btnPreviewDashboard'))return;
+  const b=document.createElement('button');b.id='btnPreviewDashboard';b.type='button';b.innerHTML='<svg class="ui-icon"><use href="#i-gauge"/></svg><span>Dashboard-Vorschau</span>';b.style.display='inline-flex';b.style.alignItems='center';b.style.gap='8px';b.onclick=startDashboardPreview;host.appendChild(b);
+})();
