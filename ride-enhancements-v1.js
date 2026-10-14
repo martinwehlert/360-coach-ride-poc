@@ -1,4 +1,4 @@
-/* 360° Coach Ride Enhancements v1.0
+/* 360° Coach Ride Enhancements v1.1
    Focused live-ride UX layer: workout title, 3-block preview, cadence corridor,
    larger primary metrics and 15 s block briefing overlays.
 
@@ -46,12 +46,14 @@
       #screenRide .ride-workout-chip b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;line-height:1.2;color:#17334a}
       #screenRide .ride-statuses{margin-left:0!important}
 
+      #screenRide .block-card #rideBlockName{transition:color .2s ease}
       #screenRide .next-card{grid-template-rows:auto auto auto auto 1fr!important}
-      #screenRide .next-card #rideNextName{margin-bottom:2px!important}
-      #screenRide .upcoming-more{border-top:1px solid #e5edf2;margin-top:7px;padding-top:5px;display:grid;gap:4px;min-height:0}
-      #screenRide .upcoming-row{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;min-width:0}
-      #screenRide .upcoming-row b{font-size:11px;line-height:1.05;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-      #screenRide .upcoming-row span{font-size:8px;color:#718493;white-space:nowrap}
+      #screenRide .next-card #rideNextName{margin-bottom:2px!important;transition:color .2s ease}
+      #screenRide .upcoming-more{border-top:1px solid #dce6ec;margin-top:7px;padding-top:6px;display:grid;gap:6px;min-height:0}
+      #screenRide .upcoming-row{display:block;min-width:0}
+      #screenRide .upcoming-row+.upcoming-row{border-top:1px solid #edf2f5;padding-top:5px}
+      #screenRide .upcoming-row b{display:block;font-size:13px;line-height:1.05;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      #screenRide .upcoming-row span{display:block;margin-top:2px;font-size:10px;line-height:1.1;color:#718493;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
       #screenRide .mini-profile{gap:5px!important;justify-content:flex-start!important;align-items:flex-end!important}
       #screenRide .mini-profile i{width:28px!important;border-radius:4px 4px 0 0!important;opacity:.95}
 
@@ -81,7 +83,10 @@
       @media (orientation:landscape) and (min-width:700px) and (max-height:610px){
         #screenRide .ride-workout-chip{max-width:240px;padding:5px 9px}
         #screenRide .ride-workout-chip b{font-size:11px}#screenRide .ride-workout-chip small{font-size:7px}
-        #screenRide .upcoming-more{gap:2px;margin-top:4px;padding-top:4px}.upcoming-row b{font-size:9px!important}.upcoming-row span{font-size:7px!important}
+        #screenRide .upcoming-more{gap:4px;margin-top:4px;padding-top:4px}
+        #screenRide .upcoming-row+.upcoming-row{padding-top:4px}
+        #screenRide .upcoming-row b{font-size:11px!important}
+        #screenRide .upcoming-row span{font-size:8.5px!important;margin-top:1px}
         #screenRide .block-briefing-card{padding:16px 20px}.block-briefing-card h2{font-size:28px!important}.block-briefing-card p{font-size:15px!important}
       }
     `;document.head.appendChild(s);
@@ -116,19 +121,20 @@
   function renderWorkoutName(){const e=byId('rideWorkoutChipName');if(e)e.textContent=state.workout?.name||'—'}
 
   function renderUpcoming(){
-    const steps=state.workout?.steps||[],next=steps[state.currentStep+1];
-    const nextName=byId('rideNextName');if(nextName&&next){nextName.style.color=zoneForStep(next).color}
+    const steps=state.workout?.steps||[],current=steps[state.currentStep],next=steps[state.currentStep+1];
+    const currentName=byId('rideBlockName');if(currentName)currentName.style.color=current?zoneForStep(current).color:'';
+    const nextName=byId('rideNextName');if(nextName)nextName.style.color=next?zoneForStep(next).color:'';
     const box=byId('upcomingMore');if(box){
       box.innerHTML='';
       for(let i=state.currentStep+2;i<=state.currentStep+3;i++){
-        const s=steps[i];if(!s)continue;const z=zoneForStep(s),row=document.createElement('div');row.className='upcoming-row';
-        row.innerHTML=`<b style="color:${z.color}">${esc(s.name||`Block ${i+1}`)}</b><span>${fmt(Number(s.durationSec||0))} · ${esc(stepTargetText(s))}</span>`;box.appendChild(row);
+        const step=steps[i];if(!step)continue;const z=zoneForStep(step),row=document.createElement('div');row.className='upcoming-row';
+        row.innerHTML=`<b style="color:${z.color}">${esc(step.name||`Block ${i+1}`)}</b><span>${fmt(Number(step.durationSec||0))} · ${esc(stepTargetText(step))}</span>`;box.appendChild(row);
       }
     }
     const mini=byId('nextMiniProfile');if(mini){
       mini.innerHTML='';
       const upcoming=steps.slice(state.currentStep+1,state.currentStep+4);const peak=Math.max(...upcoming.map(s=>Number(s.targetPower||0)),1);
-      upcoming.forEach(s=>{const bar=document.createElement('i'),z=zoneForStep(s);bar.style.height=`${Math.max(9,Math.min(34,10+Number(s.targetPower||0)/peak*24))}px`;bar.style.background=z.color;bar.title=`${s.name||''} · ${stepTargetText(s)}`;mini.appendChild(bar)})
+      upcoming.forEach(step=>{const bar=document.createElement('i'),z=zoneForStep(step);bar.style.height=`${Math.max(9,Math.min(34,10+Number(step.targetPower||0)/peak*24))}px`;bar.style.background=z.color;bar.title=`${step.name||''} · ${stepTargetText(step)}`;mini.appendChild(bar)})
     }
   }
 
@@ -209,5 +215,5 @@
 
   setInterval(()=>{if(state.screen==='ride'||state.sessionActive)updateAll()},250);
   window.rideDashboardEnhancements={update:updateAll,briefingSchema:'briefingGroups + step.briefingGroupId'};
-  if(typeof log==='function')log('Ride Dashboard Enhancements v1.0 aktiv.');
+  if(typeof log==='function')log('Ride Dashboard Enhancements v1.1 aktiv.');
 })();
