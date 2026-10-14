@@ -88,3 +88,9 @@ window.addEventListener('hashchange',()=>applyRouteFromUrl({fromBrowserNav:true}
 // open #/menu, #/ride or #/summary without the code is sent back to Login.
 applyRouteFromUrl({replaceInvalid:true});
 log('URL-Routing aktiv: Login → Hauptmenü → Ride → Summary.');
+
+/* Focused live-ride enhancement layer. Kept separate from BLE/ERG/session core. */
+(function loadRideEnhancements(){
+  if(document.querySelector('script[data-ride-enhancements]'))return;
+  const s=document.createElement('script');s.src=`ride-enhancements-v1.js?v=1.0.0`;s.async=false;s.dataset.rideEnhancements='1';document.body.appendChild(s);
+})();
