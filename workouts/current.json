@@ -1,49 +1,87 @@
 {
   "schemaVersion": 3,
-  "id": "lit-double-pyramid-40-001",
-  "name": "LIT Doppelpyramide – 40 min",
+  "id": "tredict-6zdb1rtQ2aomEfGpKLXiAS",
+  "name": "Bike · 3×7′ obere Z2",
   "sport": "cycling",
   "environment": ["indoor"],
-  "description": "Lockere LIT-Doppelpyramide im ERG-Modus. Zwei identische 20-min-Pyramiden von 140 auf 180 W und zurück, in 5-W-Schritten alle 75 Sekunden. Ziel: mental abwechslungsreiche, physiologisch ruhige aerobe Einheit.",
+  "description": "Ziel: aerobe Radbelastung mit kontrollierten oberen-Z2-Blöcken. Gesamt-RPE 3/10, Arbeitsblöcke 3–4/10. FTP-Arbeitswert 270 W. Kein Sweetspot.",
+  "source": {
+    "type": "tredict-bridge",
+    "id": "6zdb1rtQ2aomEfGpKLXiAS",
+    "provider": "Tredict.de",
+    "originalDate": "2026-10-20T16:00:00.000Z"
+  },
   "classification": {
     "primaryGoal": "aerobic-endurance",
-    "secondaryGoals": ["recovery", "cadence"],
-    "recommendedPhases": ["transition", "base"],
+    "secondaryGoals": ["upper-zone-2", "controlled-aerobic-load"],
+    "recommendedPhases": ["base"],
     "expectedSessionRpe": 3,
-    "tags": ["lit", "aerobic-endurance", "double-pyramid", "erg", "post-marathon"]
+    "tags": ["upper-z2", "aerobic-endurance", "erg", "tredict"]
   },
   "steps": [
-    {"name":"P1 ↑ 140 W","durationSec":75,"target":{"type":"absolutePower","value":140},"targetPower":140,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2,"note":"Locker einrollen."},
-    {"name":"P1 ↑ 145 W","durationSec":75,"target":{"type":"absolutePower","value":145},"targetPower":145,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↑ 150 W","durationSec":75,"target":{"type":"absolutePower","value":150},"targetPower":150,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↑ 155 W","durationSec":75,"target":{"type":"absolutePower","value":155},"targetPower":155,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↑ 160 W","durationSec":75,"target":{"type":"absolutePower","value":160},"targetPower":160,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↑ 165 W","durationSec":75,"target":{"type":"absolutePower","value":165},"targetPower":165,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↑ 170 W","durationSec":75,"target":{"type":"absolutePower","value":170},"targetPower":170,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3},
-    {"name":"P1 ↑ 175 W","durationSec":75,"target":{"type":"absolutePower","value":175},"targetPower":175,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3},
-    {"name":"P1 ↓ 180 W","durationSec":75,"target":{"type":"absolutePower","value":180},"targetPower":180,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3,"note":"Spitze bleibt locker und kontrolliert."},
-    {"name":"P1 ↓ 175 W","durationSec":75,"target":{"type":"absolutePower","value":175},"targetPower":175,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3},
-    {"name":"P1 ↓ 170 W","durationSec":75,"target":{"type":"absolutePower","value":170},"targetPower":170,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3},
-    {"name":"P1 ↓ 165 W","durationSec":75,"target":{"type":"absolutePower","value":165},"targetPower":165,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↓ 160 W","durationSec":75,"target":{"type":"absolutePower","value":160},"targetPower":160,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↓ 155 W","durationSec":75,"target":{"type":"absolutePower","value":155},"targetPower":155,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↓ 150 W","durationSec":75,"target":{"type":"absolutePower","value":150},"targetPower":150,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P1 ↓ 145 W","durationSec":75,"target":{"type":"absolutePower","value":145},"targetPower":145,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↑ 140 W","durationSec":75,"target":{"type":"absolutePower","value":140},"targetPower":140,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2,"note":"Zweite Pyramide ruhig neu aufbauen."},
-    {"name":"P2 ↑ 145 W","durationSec":75,"target":{"type":"absolutePower","value":145},"targetPower":145,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↑ 150 W","durationSec":75,"target":{"type":"absolutePower","value":150},"targetPower":150,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↑ 155 W","durationSec":75,"target":{"type":"absolutePower","value":155},"targetPower":155,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↑ 160 W","durationSec":75,"target":{"type":"absolutePower","value":160},"targetPower":160,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↑ 165 W","durationSec":75,"target":{"type":"absolutePower","value":165},"targetPower":165,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↑ 170 W","durationSec":75,"target":{"type":"absolutePower","value":170},"targetPower":170,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3},
-    {"name":"P2 ↑ 175 W","durationSec":75,"target":{"type":"absolutePower","value":175},"targetPower":175,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3},
-    {"name":"P2 ↓ 180 W","durationSec":75,"target":{"type":"absolutePower","value":180},"targetPower":180,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3,"note":"Letzte Spitze: weiterhin LIT, nicht drücken."},
-    {"name":"P2 ↓ 175 W","durationSec":75,"target":{"type":"absolutePower","value":175},"targetPower":175,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3},
-    {"name":"P2 ↓ 170 W","durationSec":75,"target":{"type":"absolutePower","value":170},"targetPower":170,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":3},
-    {"name":"P2 ↓ 165 W","durationSec":75,"target":{"type":"absolutePower","value":165},"targetPower":165,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↓ 160 W","durationSec":75,"target":{"type":"absolutePower","value":160},"targetPower":160,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↓ 155 W","durationSec":75,"target":{"type":"absolutePower","value":155},"targetPower":155,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↓ 150 W","durationSec":75,"target":{"type":"absolutePower","value":150},"targetPower":150,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2},
-    {"name":"P2 ↓ 145 W","durationSec":75,"target":{"type":"absolutePower","value":145},"targetPower":145,"cadenceLow":85,"cadenceHigh":95,"expectedRpe":2,"note":"Locker beenden."}
+    {
+      "name": "Warm-up · 8′",
+      "durationSec": 480,
+      "target": {"type": "absolutePower", "value": 153},
+      "targetPower": 153,
+      "expectedRpe": 2,
+      "note": "Locker einrollen. Tredict-Zielbereich 145–160 W · RPE 1–2."
+    },
+    {
+      "name": "Intervall 1 · 7′ obere Z2",
+      "durationSec": 420,
+      "target": {"type": "absolutePower", "value": 195},
+      "targetPower": 195,
+      "expectedRpe": 4,
+      "note": "Kontrolliert. Tredict-Zielbereich 190–200 W · RPE 3–4. Kein Sweetspot."
+    },
+    {
+      "name": "Erholung 1 · 3′",
+      "durationSec": 180,
+      "target": {"type": "absolutePower", "value": 153},
+      "targetPower": 153,
+      "expectedRpe": 2,
+      "note": "Locker. Tredict-Zielbereich 145–160 W · RPE 1–2."
+    },
+    {
+      "name": "Intervall 2 · 7′ obere Z2",
+      "durationSec": 420,
+      "target": {"type": "absolutePower", "value": 195},
+      "targetPower": 195,
+      "expectedRpe": 4,
+      "note": "Kontrolliert. Tredict-Zielbereich 190–200 W · RPE 3–4. Kein Sweetspot."
+    },
+    {
+      "name": "Erholung 2 · 3′",
+      "durationSec": 180,
+      "target": {"type": "absolutePower", "value": 153},
+      "targetPower": 153,
+      "expectedRpe": 2,
+      "note": "Locker. Tredict-Zielbereich 145–160 W · RPE 1–2."
+    },
+    {
+      "name": "Intervall 3 · 7′ obere Z2",
+      "durationSec": 420,
+      "target": {"type": "absolutePower", "value": 195},
+      "targetPower": 195,
+      "expectedRpe": 4,
+      "note": "Kontrolliert. Tredict-Zielbereich 190–200 W · RPE 3–4. Kein Sweetspot."
+    },
+    {
+      "name": "Erholung 3 · 3′",
+      "durationSec": 180,
+      "target": {"type": "absolutePower", "value": 153},
+      "targetPower": 153,
+      "expectedRpe": 2,
+      "note": "Locker. Tredict-Zielbereich 145–160 W · RPE 1–2."
+    },
+    {
+      "name": "Cooldown · 10′",
+      "durationSec": 600,
+      "target": {"type": "absolutePower", "value": 148},
+      "targetPower": 148,
+      "expectedRpe": 2,
+      "note": "Locker ausrollen. Tredict-Zielbereich 140–155 W · RPE 1–2."
+    }
   ]
 }
