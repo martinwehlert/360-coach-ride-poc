@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 3,
+  "id": "bike-aerobic-reentry-55-001",
+  "name": "Aerobic Re-entry – 55 min",
+  "sport": "cycling",
+  "environment": ["indoor"],
+  "description": "Lockerer aerober Wiedereinstieg nach der Marathonphase. FTP-relative Steuerung. Bei aktueller FTP 270 W liegen die Hauptziele ungefähr zwischen 122 und 176 W (45–65 % FTP). Ruhig treten, hohe Kadenz, keine Low-Cadence-Kraftarbeit. Ziel ist Bewegung und saubere aerobe Belastung, nicht Trainingshärte.",
+  "classification": {
+    "primaryGoal": "aerobic-endurance",
+    "secondaryGoals": ["recovery", "cadence"],
+    "recommendedPhases": ["base", "build"],
+    "expectedSessionRpe": 3,
+    "tags": ["aerobic-endurance", "recovery", "return-to-training", "high-cadence", "erg", "ftp-relative"]
+  },
+  "steps": [
+    {"name":"Einrollen","durationSec":600,"target":{"type":"ftpPercent","value":0.50,"low":0.47,"high":0.53},"cadenceLow":88,"cadenceHigh":94,"expectedRpe":2,"note":"Aktuell ca. 135 W (50 % FTP) · sehr locker starten."},
+    {"name":"Locker aerob 1","durationSec":600,"target":{"type":"ftpPercent","value":0.55,"low":0.52,"high":0.58},"cadenceLow":90,"cadenceHigh":96,"expectedRpe":2,"note":"Aktuell ca. 149 W (55 % FTP) · ruhiger Tritt."},
+    {"name":"Locker aerob 2","durationSec":600,"target":{"type":"ftpPercent","value":0.60,"low":0.57,"high":0.63},"cadenceLow":90,"cadenceHigh":96,"expectedRpe":3,"note":"Aktuell ca. 162 W (60 % FTP) · weiter locker."},
+    {"name":"Entlastung","durationSec":300,"target":{"type":"ftpPercent","value":0.52,"low":0.49,"high":0.55},"cadenceLow":90,"cadenceHigh":96,"expectedRpe":2,"note":"Aktuell ca. 140 W (52 % FTP) · bewusst zurücknehmen."},
+    {"name":"Aerobic steady","durationSec":600,"target":{"type":"ftpPercent","value":0.60,"low":0.57,"high":0.63},"cadenceLow":90,"cadenceHigh":96,"expectedRpe":3,"note":"Aktuell ca. 162 W (60 % FTP) · gleichmäßig und ruhig."},
+    {"name":"Kurzer oberer Easy-Block","durationSec":300,"target":{"type":"ftpPercent","value":0.65,"low":0.62,"high":0.68},"cadenceLow":90,"cadenceHigh":96,"expectedRpe":3,"note":"Aktuell ca. 176 W (65 % FTP) · nur leicht anheben."},
+    {"name":"Ausrollen","durationSec":300,"target":{"type":"ftpPercent","value":0.45,"low":0.42,"high":0.48},"cadenceLow":85,"cadenceHigh":92,"expectedRpe":1,"note":"Aktuell ca. 122 W (45 % FTP) · sehr locker ausrollen."}
+  ]
+}
