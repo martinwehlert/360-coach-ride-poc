@@ -1,11 +1,21 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-13",
+  "updatedAt": "2026-10-22",
   "workouts": [
     {
       "id": "bike-aerobic-reentry-55-001",
-      "path": "workouts/current.json",
+      "path": "workouts/aerobic-reentry-55.json",
       "label": "Aerobic Re-entry"
+    },
+    {
+      "id": "lit-double-pyramid-40-001",
+      "path": "workouts/lit-double-pyramid-40.json",
+      "label": "LIT Doppelpyramide · 40 min"
+    },
+    {
+      "id": "bike-upper-z2-3x7-001",
+      "path": "workouts/bike-upper-z2-3x7.json",
+      "label": "Bike · 3×7′ obere Z2"
     },
     {
       "id": "ftms-short-test-001",
