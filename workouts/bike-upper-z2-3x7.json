@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 3,
+  "id": "bike-upper-z2-3x7-001",
+  "name": "Bike · 3×7′ obere Z2",
+  "sport": "cycling",
+  "environment": ["indoor"],
+  "description": "Aerobe Radbelastung mit kontrollierten oberen-Z2-Blöcken. FTP-relative Steuerung. Bei aktueller FTP 270 W: locker 157–170 W (58–63 % FTP), Arbeitsblöcke 203–211 W (75–78 % FTP), Cool-down 149–162 W (55–60 % FTP). Gesamt-RPE 3/10, Arbeitsblöcke RPE 3–4/10. Kein Sweetspot.",
+  "classification": {
+    "primaryGoal": "aerobic-endurance",
+    "secondaryGoals": ["upper-zone-2", "controlled-aerobic-load"],
+    "recommendedPhases": ["base"],
+    "expectedSessionRpe": 3,
+    "tags": ["upper-z2", "aerobic-endurance", "erg", "ftp-relative", "tredict"]
+  },
+  "steps": [
+    {"name":"Warm-up · 8′","durationSec":480,"target":{"type":"ftpPercent","value":0.605,"low":0.58,"high":0.63},"expectedRpe":2,"note":"Locker einrollen · aktuell 157–170 W (58–63 % FTP) · RPE 1–2."},
+    {"name":"Intervall 1 · 7′ obere Z2","durationSec":420,"target":{"type":"ftpPercent","value":0.765,"low":0.75,"high":0.78},"expectedRpe":4,"note":"Kontrolliert · aktuell 203–211 W (75–78 % FTP) · RPE 3–4 · kein Sweetspot."},
+    {"name":"Erholung 1 · 3′","durationSec":180,"target":{"type":"ftpPercent","value":0.605,"low":0.58,"high":0.63},"expectedRpe":2,"note":"Locker · aktuell 157–170 W (58–63 % FTP) · RPE 1–2."},
+    {"name":"Intervall 2 · 7′ obere Z2","durationSec":420,"target":{"type":"ftpPercent","value":0.765,"low":0.75,"high":0.78},"expectedRpe":4,"note":"Kontrolliert · aktuell 203–211 W (75–78 % FTP) · RPE 3–4 · kein Sweetspot."},
+    {"name":"Erholung 2 · 3′","durationSec":180,"target":{"type":"ftpPercent","value":0.605,"low":0.58,"high":0.63},"expectedRpe":2,"note":"Locker · aktuell 157–170 W (58–63 % FTP) · RPE 1–2."},
+    {"name":"Intervall 3 · 7′ obere Z2","durationSec":420,"target":{"type":"ftpPercent","value":0.765,"low":0.75,"high":0.78},"expectedRpe":4,"note":"Kontrolliert · aktuell 203–211 W (75–78 % FTP) · RPE 3–4 · kein Sweetspot."},
+    {"name":"Erholung 3 · 3′","durationSec":180,"target":{"type":"ftpPercent","value":0.605,"low":0.58,"high":0.63},"expectedRpe":2,"note":"Locker · aktuell 157–170 W (58–63 % FTP) · RPE 1–2."},
+    {"name":"Cooldown · 10′","durationSec":600,"target":{"type":"ftpPercent","value":0.575,"low":0.55,"high":0.60},"expectedRpe":2,"note":"Locker ausrollen · aktuell 149–162 W (55–60 % FTP) · RPE 1–2."}
+  ]
+}
